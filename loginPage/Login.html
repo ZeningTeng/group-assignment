@@ -60,13 +60,13 @@
 </div>
 
 <script>
-    // 预设用户名和密码
+    // Preset Usernames and Passwords
     const validUsers = [
         { username: "user1", password: "password1" },
         { username: "user2", password: "password2" }
     ];
 
-    // 监听表单提交事件
+    // Listen to Form Submit Event
     document.getElementById("loginForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
@@ -74,12 +74,12 @@
         const password = document.getElementById("password").value;
         const loginError = document.getElementById("loginError");
 
-        // 验证用户名和密码是否匹配
+        // Validate If Username & Password Matches
         const isValidUser = validUsers.some(user => user.username === username && user.password === password);
 
         if (isValidUser) {
             alert("Login successful!");
-            window.location.href = "home.html"; // 登录成功后跳转到主页
+            window.location.href = "home.html"; // To Home Page When Login Successfully
         } else {
             alert("Invalid username or password.");
         }
