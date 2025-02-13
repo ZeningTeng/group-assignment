@@ -20,30 +20,29 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .error {
+        .error-message {
             color: red;
-            font-size: 12px;
-            margin-top: 5px;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
 <div class="login-container">
-    <h3 class="text-center">Login</h3>
+    <h3 class="text-center mb-4">Login</h3>
     <form id="loginForm">
-        <!-- Email -->
+        <!-- Username -->
         <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
-            <input type="email" id="email" class="form-control" required>
-            <span class="error" id="emailError"></span>
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" id="username" class="form-control" required>
         </div>
 
         <!-- Password -->
         <div class="mb-3">
             <label for="password" class="form-label">Password:</label>
-            <input type="password" id="password" class="form-control" required minlength="8">
-            <span class="error" id="passwordError"></span>
+            <input type="password" id="password" class="form-control" required minlength="6">
         </div>
 
         <!-- Remember Me -->
@@ -53,69 +52,40 @@
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" id="submitBtn" class="btn btn-primary w-100" disabled>Login</button>
-        <span class="error text-center d-block mt-2" id="loginError"></span>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+
+        <!-- Error Message -->
+        <div id="loginError" class="error-message"></div>
     </form>
 </div>
 
 <script>
-    function validateEmail() {
-        const email = document.getElementById("email").value.trim();
-        const emailError = document.getElementById("emailError");
-        const regex = /^[a-zA-Z0-9._%+-]+@northeastern\.edu$/;
+    // 预设用户名和密码
+    const validUsers = [
+        { username: "user1", password: "password1" },
+        { username: "user2", password: "password2" }
+    ];
 
-        if (!regex.test(email)) {
-            emailError.textContent = "Email must be a valid @northeastern.edu address.";
-            return false;
-        } else {
-            emailError.textContent = "";
-            return true;
-        }
-    }
-
-    function validatePassword() {
-        const password = document.getElementById("password").value;
-        const passwordError = document.getElementById("passwordError");
-        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-        if (!regex.test(password)) {
-            passwordError.textContent = "Password must be at least 8 characters long and contain letters and numbers.";
-            return false;
-        } else {
-            passwordError.textContent = "";
-            return true;
-        }
-    }
-
-    document.getElementById("loginForm").addEventListener("input", function () {
-        const isEmailValid = validateEmail();
-        const isPasswordValid = validatePassword();
-        document.getElementById("submitBtn").disabled = !(isEmailValid && isPasswordValid);
-    });
-
+    // 监听表单提交事件
     document.getElementById("loginForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
-        // 模拟用户验证
-        const email = document.getElementById("email").value.trim();
+        const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value;
         const loginError = document.getElementById("loginError");
 
-        const validUsers = [
-            { email: "test@northeastern.edu", password: "Test1234" },
-            { email: "user@northeastern.edu", password: "User1234" }
-        ];
-
-        const isValidUser = validUsers.some(user => user.email === email && user.password === password);
+        // 验证用户名和密码是否匹配
+        const isValidUser = validUsers.some(user => user.username === username && user.password === password);
 
         if (isValidUser) {
             alert("Login successful!");
-            window.location.href = "home.html"; // 登录成功跳转
+            window.location.href = "home.html"; // 登录成功后跳转到主页
         } else {
-            loginError.textContent = "Invalid email or password.";
+            alert("Invalid username or password.");
         }
     });
 </script>
 
 </body>
 </html>
+
