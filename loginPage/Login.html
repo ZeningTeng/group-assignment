@@ -22,6 +22,7 @@
             background: white;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            opacity: 1;
             transition: all 0.3s ease;
         }
     
@@ -59,17 +60,33 @@
         }
     
         .btn-primary {
-            background-color: #007bff;
+            background-color: #FFD700 ;
             border: none;
+            border-radius: 32px;
             padding: 12px;
-            border-radius: 8px;
             font-size: 16px;
             font-weight: 500;
             transition: background-color 0.3s ease;
         }
     
         .btn-primary:hover {
-            background-color: #0056b3;
+            background-color: #e6cc3a ;
+        }
+
+        .errorMessage-field {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .successMessage-field {
+            color: green;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
         }
     
         .error-message {
@@ -78,14 +95,23 @@
             margin-top: 10px;
             text-align: center;
         }
+
+        .fade {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
     </style>
     
 </head>
 <body>
 
-<div class="login-container">
+
+<div class="login-container">   
     <h3 class="text-center mb-4">Login</h3>
     <form id="loginForm">
+
+        <label class="errorMessage-field" >Invalid User Name or Password</label>
+        <label class="successMessage-field" >Login Successful</label>
         <!-- Username -->
         <div class="mb-3">
             <label for="username" class="form-label">Username:</label>
@@ -131,10 +157,14 @@
         const isValidUser = validUsers.some(user => user.username === username && user.password === password);
 
         if (isValidUser) {
-            alert("Login successful!");
-            window.location.href = "../index.html"; // To Home Page When Login Successfully
+            document.querySelector('.errorMessage-field').style.display = "none"
+            document.querySelector('.successMessage-field').style.display = "block";
+            setTimeout(() => {
+                window.location.href = "../index.html"; // To Home Page When Login Successfully
+            }, 1000);
+            
         } else {
-            alert("Invalid username or password.");
+            document.querySelector('.errorMessage-field').style.display = "block";   
         }
     });
 </script>
