@@ -10,7 +10,8 @@
             height: 100vh;
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
+            background: #fffdefd6;
+            background-image: url('assets/img/loginpage/loginPageBg.png');
             display: flex;
             justify-content: center;
             align-items: center;
@@ -62,7 +63,7 @@
         .btn-primary {
             background-color: #FFD700 ;
             border: none;
-            border-radius: 32px;
+            border-radius: 40px;
             padding: 12px;
             font-size: 16px;
             font-weight: 500;
@@ -73,6 +74,22 @@
             background-color: #e6cc3a ;
         }
 
+        .text-link {
+            font-size: 14px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .text-link:hover {
+            text-decoration: underline;
+        }
+
+        .extra-links {
+           display: flex;
+           justify-content: space-between;
+           margin-top: 10px;
+        }
+ 
         .errorMessage-field {
             color: red;
             font-size: 14px;
@@ -84,6 +101,7 @@
         .successMessage-field {
             color: green;
             font-size: 14px;
+            font-weight: bold;
             margin-top: 10px;
             text-align: center;
             display: none;
@@ -96,10 +114,6 @@
             text-align: center;
         }
 
-        .fade {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
     </style>
     
 </head>
@@ -133,6 +147,13 @@
         <!-- Submit Button -->
         <button type="submit" class="btn btn-primary w-100">Login</button>
 
+        <!-- Extra Links -->
+        <!-- Can Implement Passowrd Reset and SignUp Pages-->
+        <div class="extra-links">
+            <a href="#" class="text-link">Forgot Password?</a> 
+            <a href="#" class="text-link">Sign Up</a>
+        </div>
+
         <!-- Error Message -->
         <div id="loginError" class="error-message"></div>
     </form>
@@ -155,7 +176,8 @@
 
         // Validate If Username & Password Matches
         const isValidUser = validUsers.some(user => user.username === username && user.password === password);
-
+       
+        // Display Error Message if Invalid User
         if (isValidUser) {
             document.querySelector('.errorMessage-field').style.display = "none"
             document.querySelector('.successMessage-field').style.display = "block";
