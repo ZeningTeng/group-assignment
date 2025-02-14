@@ -16,12 +16,24 @@
             background: #fffdefd6;
             background-image: url('/assets/img/loginpage/loginPageBg.png');
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
         }
 
         .about-container {
             width: 400px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+
+        .login-container,
+        .about-container {
+            width: 100%;
+            max-width: 400px;
             padding: 30px;
             background: white;
             border-radius: 12px;
@@ -107,11 +119,11 @@
             display: flex;
             justify-content: space-between;
             margin-top: 10px;
-           display: flex;
-           justify-content: space-between;
-           margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
         }
- 
+
         .errorMessage-field {
             color: red;
             font-size: 14px;
@@ -163,16 +175,18 @@
 
         .container {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             width: 100%;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 20px auto;
         }
 
-    }
-
-
+        .login-container,
+        .about-container {
+            max-width: 100%;
+        }
     </style>
 
 </head>
@@ -181,107 +195,97 @@
 
 
     <div class="container">
-        <div class="login-container">
-            <h3 class="text-center mb-4">Login</h3>
-            <form id="loginForm">
+        <div class="row">
 
-                <label class="errorMessage-field">Invalid Username or Password</label>
-                <label class="successMessage-field">Login Successful</label>
-                <!-- Username -->
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username:</label>
-                    <input type="text" id="username" class="form-control" required>
-                </div>
-
-                <!-- Password -->
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password:</label>
-                    <!-- Using a Flex container for input + icon side by side -->
-                    <div class="d-flex align-items-center">
-                        <input type="password" s id="password" class="form-control flex-grow-1 me-2" required
-                            minlength="6" />
-                        <!-- Password Toggle Icon-->
-                        <i class="bi bi-eye-slash password-toggle" id="togglePassword" title="Show/Hide Password"></i>
-                    </div>
-                </div>
-
-                <!-- Remember Me -->
-                <div class="mb-3 form-check">
-                    <input type="checkbox" id="rememberMe" class="form-check-input">
-                    <label for="rememberMe" class="form-check-label">Remember Me</label>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary w-100">Login</button>
-
-                <!-- Extra Links -->
-                <!-- Can Implement Password Reset and SignUp Pages-->
-                <div class="extra-links">
-                    <a href="#" class="text-link">Forgot Password?</a>
-                    <a href="#" class="text-link">Sign Up</a>
-                </div>
-
-                <!-- Error Message -->
-                <div id="loginError" class="error-message"></div>
-            </form>
-
-        </div>
-        <div class="about-container">
-            <h3 class="text-center mb-4">Why Choose Us?</h3>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-gem fs-3 text-warning me-2"></i>
-                                <h5 class="card-title mb-0">Exquisite Craftsmanship</h5>
+            <div class="col-lg-6 col-md-6 col-12 mb-4">
+                <div class="login-container">
+                    <h3 class="text-center mb-4">Login</h3>
+                    <form id="loginForm">
+                        <label class="errorMessage-field">Invalid Username or Password</label>
+                        <label class="successMessage-field">Login Successful</label>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" id="username" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password:</label>
+                            <div class="d-flex align-items-center">
+                                <input type="password" id="password" class="form-control flex-grow-1 me-2" required
+                                    minlength="6" />
+                                <i class="bi bi-eye-slash password-toggle" id="togglePassword"
+                                    title="Show/Hide Password"></i>
                             </div>
-                            <p class="card-text">Our jewelry pieces are crafted with precision and passion, ensuring
-                                every item is a masterpiece.</p>
                         </div>
-                    </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" id="rememberMe" class="form-check-input">
+                            <label for="rememberMe" class="form-check-label">Remember Me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                        <div class="extra-links mt-3">
+                            <a href="#" class="text-link">Forgot Password?</a>
+                            <a href="#" class="text-link">Sign Up</a>
+                        </div>
+                        <div id="loginError" class="error-message"></div>
+                    </form>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-shield-check fs-3 text-success me-2"></i>
-                                <h5 class="card-title mb-0">Unmatched Quality</h5>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="about-container">
+                    <h3 class="text-center mb-4">Why Choose Us?</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-gem fs-3 text-warning me-2"></i>
+                                        <h5 class="card-title mb-0">Exquisite Craftsmanship</h5>
+                                    </div>
+                                    <p>Our jewelry pieces are crafted with precision and passion, ensuring every item is
+                                        a masterpiece.</p>
+                                </div>
                             </div>
-                            <p class="card-text">We use only the finest materials, ensuring durability and brilliance in
-                                every piece.</p>
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-shield-check fs-3 text-success me-2"></i>
+                                        <h5 class="card-title mb-0">Unmatched Quality</h5>
+                                    </div>
+                                    <p>We use only the finest materials, ensuring durability and brilliance in every
+                                        piece.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-globe fs-3 text-secondary"></i>
+                                    <h5>Community Impact</h5>
+                                    <p>By shopping with us, you're supporting local artisans and contributing to the
+                                        growth of our community.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="../index.html" class="btn btn-primary btn-lg rounded-pill px-4 py-2">Discover Our
+                            Collection</a>
                     </div>
                 </div>
             </div>
-
-
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body text-center">
-                            <i class="bi bi-globe fs-3 text-secondary"></i>
-                            <h5 class="card-title mt-2">Community Impact</h5>
-                            <p>By shopping with us, you're supporting local artisans and contributing to the growth of
-                                our community.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Call-to-action Button -->
-            <div class="text-center mt-4">
-                <a href="../index.html" class="btn btn-primary btn-lg rounded-pill px-4 py-2">Discover Our
-                    Collection</a>
-            </div>
-
         </div>
-    </div>    
+    </div>
 
-        <!-- Error Message -->
-        <div id="loginError" class="error-message"></div>
+
+
+
+    <!-- Error Message -->
+    <div id="loginError" class="error-message"></div>
     </form>
-</div>
+    </div>
 
 
     <script>
