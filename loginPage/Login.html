@@ -1,23 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
     <style>
         body {
             height: 100vh;
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #fffdefd6;
-            background-image: url('assets/img/loginpage/loginPageBg.png');
+            background-image: url('/assets/img/loginpage/loginPageBg.png');
             display: flex;
             justify-content: center;
             align-items: center;
         }
-    
+
+        .about-container {
+            width: 400px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+
+        .about-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+        }
+
         .login-container {
             width: 400px;
             padding: 30px;
@@ -27,22 +44,22 @@
             opacity: 1;
             transition: all 0.3s ease;
         }
-    
+
         .login-container:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
         }
-    
+
         h3 {
             color: #333;
             font-weight: 600;
         }
-    
+
         .form-label {
             font-weight: 500;
             color: #555;
         }
-    
+
         .form-control {
             padding: 12px;
             font-size: 14px;
@@ -50,19 +67,20 @@
             border: 1px solid #ddd;
             transition: border-color 0.3s ease;
         }
-    
+
         .form-control:focus {
             border-color: #007bff;
             box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
         }
-    
+
         .form-check-label {
             color: #555;
             font-size: 14px;
         }
-    
+
         .btn-primary {
-            background-color: #FFD700 ;
+
+            background-color: #FFD700;
             border: none;
             border-radius: 40px;
             padding: 12px;
@@ -70,9 +88,9 @@
             font-weight: 500;
             transition: background-color 0.3s ease;
         }
-    
+
         .btn-primary:hover {
-            background-color: #e6cc3a ;
+            background-color: #e6cc3a;
         }
 
         .text-link {
@@ -86,6 +104,9 @@
         }
 
         .extra-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
            display: flex;
            justify-content: space-between;
            margin-top: 10px;
@@ -106,8 +127,26 @@
             margin-top: 10px;
             text-align: center;
             display: none;
+
         }
-    
+
+        .errorMessage-field {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .successMessage-field {
+            color: green;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
         .error-message {
             color: red;
             font-size: 14px;
@@ -119,45 +158,128 @@
             cursor: pointer;
             font-size: 1.2rem;
             color: #555;
+
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
     }
 
+
     </style>
-    
+
 </head>
+
 <body>
 
 
-<div class="login-container">   
-    <h3 class="text-center mb-4">Login</h3>
-    <form id="loginForm">
+    <div class="container">
+        <div class="login-container">
+            <h3 class="text-center mb-4">Login</h3>
+            <form id="loginForm">
 
-        <label class="errorMessage-field" >Invalid Username or Password</label>
-        <label class="successMessage-field" >Login Successful</label>
-        <!-- Username -->
-        <div class="mb-3">
-            <label for="username" class="form-label">Username:</label>
-            <input type="text" id="username" class="form-control" required>
+                <label class="errorMessage-field">Invalid Username or Password</label>
+                <label class="successMessage-field">Login Successful</label>
+                <!-- Username -->
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" id="username" class="form-control" required>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <!-- Using a Flex container for input + icon side by side -->
+                    <div class="d-flex align-items-center">
+                        <input type="password" s id="password" class="form-control flex-grow-1 me-2" required
+                            minlength="6" />
+                        <!-- Password Toggle Icon-->
+                        <i class="bi bi-eye-slash password-toggle" id="togglePassword" title="Show/Hide Password"></i>
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="mb-3 form-check">
+                    <input type="checkbox" id="rememberMe" class="form-check-input">
+                    <label for="rememberMe" class="form-check-label">Remember Me</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+
+                <!-- Extra Links -->
+                <!-- Can Implement Password Reset and SignUp Pages-->
+                <div class="extra-links">
+                    <a href="#" class="text-link">Forgot Password?</a>
+                    <a href="#" class="text-link">Sign Up</a>
+                </div>
+
+                <!-- Error Message -->
+                <div id="loginError" class="error-message"></div>
+            </form>
+
         </div>
+        <div class="about-container">
+            <h3 class="text-center mb-4">Why Choose Us?</h3>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-gem fs-3 text-warning me-2"></i>
+                                <h5 class="card-title mb-0">Exquisite Craftsmanship</h5>
+                            </div>
+                            <p class="card-text">Our jewelry pieces are crafted with precision and passion, ensuring
+                                every item is a masterpiece.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-shield-check fs-3 text-success me-2"></i>
+                                <h5 class="card-title mb-0">Unmatched Quality</h5>
+                            </div>
+                            <p class="card-text">We use only the finest materials, ensuring durability and brilliance in
+                                every piece.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Password -->
-         <div class="mb-3">
-            <label for="password" class="form-label">Password:</label>
-             <!-- Using a Flex container for input + icon side by side -->
-                <div class="d-flex align-items-center">
-                <input  type="password"s id="password" class="form-control flex-grow-1 me-2" required minlength="6" />
-                <!-- Password Toggle Icon-->
-                <i class="bi bi-eye-slash password-toggle" id="togglePassword" title="Show/Hide Password"></i>
-               </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-globe fs-3 text-secondary"></i>
+                            <h5 class="card-title mt-2">Community Impact</h5>
+                            <p>By shopping with us, you're supporting local artisans and contributing to the growth of
+                                our community.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call-to-action Button -->
+            <div class="text-center mt-4">
+                <a href="../index.html" class="btn btn-primary btn-lg rounded-pill px-4 py-2">Discover Our
+                    Collection</a>
+            </div>
+
         </div>
+    </div>
 
-        <!-- Remember Me -->
-        <div class="mb-3 form-check">
-            <input type="checkbox" id="rememberMe" class="form-check-input">
-            <label for="rememberMe" class="form-check-label">Remember Me</label>
-        </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary w-100">Login</button>
+
 
         <!-- Extra Links -->
         <!-- Can Implement Password Reset and SignUp Pages-->
@@ -171,49 +293,52 @@
     </form>
 </div>
 
-<script>
-    // Preset Usernames and Passwords
-    const validUsers = [
-        { username: "user1", password: "password1" },
-        { username: "user2", password: "password2" }
-    ];
 
-    // Listen to Form Submit Event
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-        e.preventDefault();
+    <script>
+        // Preset Usernames and Passwords
+        const validUsers = [
+            { username: "user1", password: "password1" },
+            { username: "user2", password: "password2" }
+        ];
 
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value;
-        const loginError = document.getElementById("loginError");
+        // Listen to Form Submit Event
+        document.getElementById("loginForm").addEventListener("submit", function (e) {
+            e.preventDefault();
 
-        // Validate If Username & Password Matches
-        const isValidUser = validUsers.some(user => user.username === username && user.password === password);
-       
-        // Display Error Message if Invalid User
-        if (isValidUser) {
-            document.querySelector('.errorMessage-field').style.display = "none"
-            document.querySelector('.successMessage-field').style.display = "block";
-            setTimeout(() => {
-                window.location.href = "../index.html"; // To Home Page When Login Successfully
-            }, 1000);
-            
-        } else {
-            document.querySelector('.errorMessage-field').style.display = "block";   
-        }
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value;
+            const loginError = document.getElementById("loginError");
+
+
+            // Validate If Username & Password Matches
+            const isValidUser = validUsers.some(user => user.username === username && user.password === password);
+
+            // Display Error Message if Invalid User
+            if (isValidUser) {
+                document.querySelector('.errorMessage-field').style.display = "none"
+                document.querySelector('.successMessage-field').style.display = "block";
+                setTimeout(() => {
+                    window.location.href = "../index.html"; // To Home Page When Login Successfully
+                }, 1000);
+
+            } else {
+                document.querySelector('.errorMessage-field').style.display = "block";
+            }
         });
-        
+
         // Password Toggle Functionality
-        document.getElementById('togglePassword').addEventListener('click', function() {
+        document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordField = document.getElementById('password');
             // Toggling the Password type attribute
             passwordField.type =
-            passwordField.type === 'password' ? 'text' : 'password';
-             // Toggling the icon classes
+                passwordField.type === 'password' ? 'text' : 'password';
+            // Toggling the icon classes
             this.classList.toggle('bi-eye');
             this.classList.toggle('bi-eye-slash');
-    });
-</script>
+        });
+    </script>
+
 
 </body>
-</html>
 
+</html>
