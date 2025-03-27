@@ -39,7 +39,13 @@ This document provides an overview of the bootstrap components used in the proje
 | **Typography**  | Bootstrap classes used for text styling and layout spacing.                |
 
 ---
-
+## How to use
+To start react
+In your vsCode editor: 1.cd your/assignment/location/group-assignment/my-app
+2.npm start
+You might want to install react before you do this.
+all assets are in my-app/public and all frontend files are in my-app/src
+Backends files in group-assignment/server
 ## Dependencies
 - **Bootstrap 5 (CDN)**
 - **Bootstrap Icons (CDN)**
