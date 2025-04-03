@@ -66,14 +66,7 @@ function HomePage() {
   {/* Navigation*/}
   <nav className="navbar navbar-expand-lg navbar-light bg-light">
     <nav aria-label="breadcrumb">
-      <ol className="breadcrumb">
-        <li className="breadcrumb-item">
-          <a href="#">Home</a>
-        </li>
-        <li className="breadcrumb-item active" aria-current="page">
-          Library
-        </li>
-      </ol>
+   
     </nav>
     <div className="container px-4 px-lg-1">
       <a className="navbar-brand" href="#!">
@@ -162,9 +155,7 @@ function HomePage() {
             </a>
           </li>
         </ul>
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+       
       </div>
     </div>
   </nav>

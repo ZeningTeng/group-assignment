@@ -4,11 +4,25 @@ import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Box 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-
+function NavItem() {
+    const navigate = useNavigate();
+  
+    const handleClick = () => {
+      navigate('/');
+    };
+  
+    return (
+      <li className="nav-item">
+        <a className="nav-link active" aria-current="page" onClick={handleClick}>
+          Home
+        </a>
+      </li>
+    );
+  }
 function SearchBar() {
   const [name, setName] = useState('');
   const navigate = useNavigate();
-
+   
   const handleSearch = async (e) => {
     e.preventDefault();
     const response = await axios.get('http://localhost:8000/search', {
@@ -48,18 +62,9 @@ const ResultPage = () => {
 
   return (
     <div>
-      {/* 导航栏 */}
+      
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <nav aria-label="breadcrumb">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <a href="#">Home</a>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              Library
-            </li>
-          </ol>
-        </nav>
+       
         <div className="container px-4 px-lg-1">
           <a className="navbar-brand" href="#!">
             Jewelry Shop
@@ -77,11 +82,8 @@ const ResultPage = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#!">
-                  Home
-                </a>
-              </li>
+             <NavItem />
+           
               <li className="nav-item">
                 <a className="nav-link" href="#!">
                   About
