@@ -1,7 +1,49 @@
 
 import React, { useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Search from './Search'; 
 import './styles.css'; 
+import axios from 'axios';
+function SearchBar() {
+  
 
+
+
+   const [name, setName] = useState('');
+  
+  
+   const navigate = useNavigate();
+
+    const handleSearch = async (e) => {
+      e.preventDefault();
+      
+      const response = await axios.get('http://localhost:8000/search', { 
+        params: { name }
+      });
+
+        navigate('/result', { state: { results: response.data } });
+  
+      
+    };
+  
+    return (
+      <div>
+      <form onSubmit={handleSearch} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
+     
+    
+        <input
+          type="name"
+          placeholder="Search some thing here"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={{ marginBottom: '10px', padding: '8px' }}
+        />
+        <button type="submit" style={{ padding: '8px' }}>search</button>
+      </form>
+    </div>
+    );
+}
 function HomePage() {
   useEffect(() => {
 
@@ -20,17 +62,11 @@ function HomePage() {
   />
   {/* Core theme CSS (includes Bootstrap)*/}
   <link href="css/styles.css" rel="stylesheet" />
+    
   {/* Navigation*/}
   <nav className="navbar navbar-expand-lg navbar-light bg-light">
     <nav aria-label="breadcrumb">
-      <ol className="breadcrumb">
-        <li className="breadcrumb-item">
-          <a href="#">Home</a>
-        </li>
-        <li className="breadcrumb-item active" aria-current="page">
-          Library
-        </li>
-      </ol>
+   
     </nav>
     <div className="container px-4 px-lg-1">
       <a className="navbar-brand" href="#!">
@@ -102,6 +138,7 @@ function HomePage() {
             </ul>
           </li>
         </ul>
+        <SearchBar />
         <form className="d-flex">
           <button className="btn btn-outline-dark" type="submit">
             <i className="bi-cart-fill me-1" />
@@ -118,9 +155,7 @@ function HomePage() {
             </a>
           </li>
         </ul>
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+       
       </div>
     </div>
   </nav>
@@ -589,6 +624,8 @@ function HomePage() {
       </div>
     </div>
   </div>
+    
+      
   <div
     className="progress"
     id="progressBar"
