@@ -4,27 +4,41 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 
-
+const cors = require('cors');
 
 
 const app = express();
-
+app.use(cors({
+  origin: 'http://localhost:3000', 
+  credentials: true,
+}));
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/images', express.static(path.join(__dirname, 'images'))); 
-mongoose.connect('mongodb+srv://t15998627020:6150project@6150project.kikhcmw.mongodb.net/users?retryWrites=true&w=majority&appName=6150project', {
+app.use('/assets', express.static(path.join(__dirname, '../assets')));
+mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcmw.mongodb.net/ourDataBase?retryWrites=true&w=majority&appName=6150project', {
   });
   const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
+    image:{type: String},
+    type:{type:String}
+  });
+  
+ 
+  const productSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    price: { type: String, required: true },
+    count: { type: String, required: true },
+    description: { type: String, required: true },
     image:{type: String}
   });
   
   const User = mongoose.model('User', userSchema);
- 
+  const Products = mongoose.model('Product', productSchema);
   let emailRegex    = /^[a-zA-Z0-9]+@northeastern\.edu$/;
    let namePattern= /^[a-zA-Z]+ [a-zA-Z]+$/;
 
@@ -138,6 +152,63 @@ mongoose.connect('mongodb+srv://t15998627020:6150project@6150project.kikhcmw.mon
           return res.status(200).json({ message: 'User updated successfully.' });
         
       });
+      const authenticateToken = (req, res, next) => {
+ 
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.split(' ')[1];
+      
+        if (!token) {
+          return res.sendStatus(401); 
+        }
+      
+        jwt.verify(token, 'auth', (err, decoded) => {
+          if (err) {
+            return res.sendStatus(403); 
+          }
+       
+          req.userId = decoded.id;
+          next();
+        });
+      };
+      
+      app.get('/profile', authenticateToken, async (req, res) => {
+       
+      
+          const user = await User.findById(req.userId);
+          if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+       
+          res.status(200).json({
+            user});
+        
+      });
+   app.post('/Login', async (req, res) => {
+     const { name, password } = req.body;
+   
+       
+       const user = await User.findOne({ name });
+       if (!user) {
+         return res.status(404).json({ error: "User not found" });
+       }
+      
+      
+         if (password !== user.password) {
+         return res.status(400).json({ error: "Invalid password" });
+       }
+   
+       const token = jwt.sign(
+         { id: user._id, name: user.name },
+         'auth',
+         { expiresIn: '1h' }
+       );
+       return res.status(200).json({ token,  user: {
+         id: user._id,
+         name: user.name,
+         type: user.type
+       } });
+     
+   });
     /**
  * @swagger
  * /user/delete:
@@ -204,7 +275,7 @@ app.delete('/user/delete', async (req, res) => {
  */
   app.get('/user/getAll', async (req, res) => {
    
-      const users = await User.find({}, { name: 1, email: 1, password: 1 });
+      const users = await Product.find({}, { name: 1, email: 1, passoword: 1 });
       return res.status(200).json({ users });
     
   });
@@ -217,7 +288,19 @@ const storage = multer.diskStorage({
       call(null, req.body.email+path.extname(file.originalname));
     }
   });
+  app.get('/search', async (req, res) => {
+   
+    const { name } = req.query;
+    console.log(name + " dwiadjoawjdwiao");
   
+
+    const products = await Products.find({ name: new RegExp(name, 'i') });
+    
+   
+    return res.status(200).json({ products });
+  });
+  
+
   const fileFilter = (req, file, call) => {
     const correct = /jpeg|jpg|png|gif/;
     const extname = correct.test(path.extname(file.originalname).toLowerCase());
@@ -282,7 +365,7 @@ const storage = multer.diskStorage({
     
   });
             
-  app.use('/image', express.static('image'));
+
 
   const swaggerJsdoc = require('swagger-jsdoc');
   const swaggerUi = require('swagger-ui-express');
@@ -304,5 +387,5 @@ const storage = multer.diskStorage({
   app.use("/swag", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
   
   
-app.listen(3000, () => {
+app.listen(8000, () => {
 });

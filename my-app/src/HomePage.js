@@ -1,12 +1,105 @@
 
 import React, { useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppBar, Toolbar, Button, Typography, Box } from '@mui/material';
+
+import Search from './Search'; 
 import './styles.css'; 
+import axios from 'axios';
+function SearchBar() {
+  
 
+
+
+   const [name, setName] = useState('');
+
+  
+   const navigate = useNavigate();
+
+    const handleSearch = async (e) => {
+      e.preventDefault();
+      
+      const response = await axios.get('http://localhost:8000/search', { 
+        params: { name }
+      });
+
+        navigate('/result', { state: { results: response.data } });
+  
+      
+    };
+  
+    return (
+      <div>
+      <form onSubmit={handleSearch} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
+     
+    
+        <input
+          type="name"
+          placeholder="Search some thing here"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={{ marginBottom: '10px', padding: '8px' }}
+        />
+        <button type="submit" style={{ padding: '8px' }}>search</button>
+      </form>
+    </div>
+    );
+}
 function HomePage() {
-  useEffect(() => {
+  const [token, setToken] = useState(null);
+  
 
+  const [userInfo, setUserInfo] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+ 
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+    
+      setToken(storedToken);
+  
+      axios
+        .get('http://localhost:8000/profile', {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          }
+        })
+        .then(res => {
+          console.log(res.data.user);
+          setUserInfo(res.data.user);
+        })
+        .catch(err => {
+          console.error('failed', err);
+        });
+    }
   }, []);
 
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSignOut = () => {
+
+    localStorage.removeItem('token');
+    setToken(null);
+    setUserInfo(null);
+    handleMenuClose();
+    navigate('/login'); 
+  };
+  const handleProfile = () => {
+    handleMenuClose();
+    navigate('/profile');
+  };
+  const goToLogin = () => {
+    navigate('/login');
+  };
   return (
     <>
       {<>
@@ -20,17 +113,11 @@ function HomePage() {
   />
   {/* Core theme CSS (includes Bootstrap)*/}
   <link href="css/styles.css" rel="stylesheet" />
+    
   {/* Navigation*/}
   <nav className="navbar navbar-expand-lg navbar-light bg-light">
     <nav aria-label="breadcrumb">
-      <ol className="breadcrumb">
-        <li className="breadcrumb-item">
-          <a href="#">Home</a>
-        </li>
-        <li className="breadcrumb-item active" aria-current="page">
-          Library
-        </li>
-      </ol>
+   
     </nav>
     <div className="container px-4 px-lg-1">
       <a className="navbar-brand" href="#!">
@@ -102,6 +189,7 @@ function HomePage() {
             </ul>
           </li>
         </ul>
+        <SearchBar />
         <form className="d-flex">
           <button className="btn btn-outline-dark" type="submit">
             <i className="bi-cart-fill me-1" />
@@ -113,14 +201,22 @@ function HomePage() {
         </form>
         <ul className="navbar-nav ">
           <li className="nav-item">
-            <a className="nav-link" href="loginPage/Login.html">
-              Login
-            </a>
+            {userInfo?(
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="subtitle1" sx={{ marginRight: 2 }}>
+              {userInfo.name}
+            </Typography>
+         
+          </Box>
+        ) : (
+          <Button onClick={goToLogin}>
+              Login Page
+          </Button>
+        )
+}
           </li>
         </ul>
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+       
       </div>
     </div>
   </nav>
@@ -253,18 +349,18 @@ function HomePage() {
       <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
         <div className="col mb-5">
           <div className="card h-100">
-            {/* Product image*/}
+        
             <img
               className="card-img-top"
               src="assets/img/products/1.png"
               alt="..."
             />
-            {/* Product details*/}
+          
             <div className="card-body p-4">
               <div className="text-center">
-                {/* Product name*/}
+             
                 <h5 className="fw-bolder">Fancy Product</h5>
-                {/* Product price*/}
+         
                 $40.00 - $80.00
               </div>
             </div>
@@ -589,6 +685,8 @@ function HomePage() {
       </div>
     </div>
   </div>
+    
+      
   <div
     className="progress"
     id="progressBar"
