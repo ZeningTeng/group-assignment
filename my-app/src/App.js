@@ -2,10 +2,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavig
 import { useEffect } from 'react';
 import Home from './HomePage';
 import Result from './Result';
+import Login from './login';
 
 
 function App() {
-
+  const token = localStorage.getItem('token');
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -18,6 +19,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/Result" element={<Result />} />
+      <Route path="/Login" element={<Login />} />
     </Routes>
   );
 }
