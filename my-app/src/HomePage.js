@@ -1,11 +1,22 @@
-import React, { useEffect } from "react";
+import "./styles.css";
+import "./customStyles.css";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { AppBar, Toolbar, Button, Typography, Box } from "@mui/material";
-
+import {
+	AppBar,
+	Toolbar,
+	Button,
+	Typography,
+	Box,
+	Snackbar,
+	Alert,
+} from "@mui/material";
 import Search from "./Search";
-import "./styles.css";
 import axios from "axios";
+import second from "./";
+import { AppContext } from "./GlobalProvider";
+import { products } from "./model/products";
 function SearchBar() {
 	const [name, setName] = useState("");
 
@@ -52,6 +63,9 @@ function HomePage() {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 	const navigate = useNavigate();
+	const { cartCount, setCartCount, addedItemsInCart, setAddedItemsInCart } =
+		useContext(AppContext);
+	const [openSnackBar, setOpenSnackBar] = useState(false);
 
 	useEffect(() => {
 		const storedToken = localStorage.getItem("token");
@@ -96,6 +110,30 @@ function HomePage() {
 	const goToLogin = () => {
 		navigate("/login");
 	};
+
+	const addToCart = (id) => {
+		// console.warn(id);
+		let allItems = [...addedItemsInCart];
+		if (!allItems.find((item) => item.id === id)) {
+			allItems.push({ id: id, count: 1 });
+		} else {
+			allItems = allItems.map((item) =>
+				item.id === id ? { ...item, count: item.count + 1 } : item
+			);
+		}
+		setAddedItemsInCart(allItems);
+		setCartCount(allItems.length); // count by items
+
+		setOpenSnackBar(true);
+	};
+
+	const handleCloseSnackBar = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+		setOpenSnackBar(false);
+	};
+
 	return (
 		<>
 			{
@@ -215,8 +253,14 @@ function HomePage() {
 										>
 											<i className="bi-cart-fill me-1" />
 											Cart
-											<span className="badge bg-dark text-white ms-1 rounded-pill">
-												0
+											<span
+												className={`badge text-white ms-1 rounded-pill ${
+													cartCount > 0
+														? "bg-danger pulse"
+														: "bg-dark"
+												}`}
+											>
+												{cartCount}
 											</span>
 										</button>
 									</Link>
@@ -404,137 +448,116 @@ function HomePage() {
 							</div>
 						</div>
 					</div>
-					{/* Section*/}
+					{/* Product Section */}
 					<section className="py-5">
 						<div className="container px-4 px-lg-5 mt-5">
 							<div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-								<div className="col mb-5">
-									<div className="card h-100">
-										<img
-											className="card-img-top"
-											src="assets/img/products/1.png"
-											alt="..."
-										/>
-
-										<div className="card-body p-4">
-											<div className="text-center">
-												<h5 className="fw-bolder">
-													Fancy Product
-												</h5>
-												$40.00 - $80.00
-											</div>
-										</div>
-										{/* Product actions*/}
-										<div className="card-footer p-4 pt-0 border-top-0 bg-transparent">
-											<div className="text-center">
-												<a
-													className="btn btn-outline-dark mt-auto"
-													href="#"
+								{/* first product */}
+								{products.map((product) => (
+									<div className="col mb-5" key={product.id}>
+										<div className="card h-100">
+											{/* Sale badge*/}
+											{product.discountedPrice && (
+												<div
+													className="badge bg-dark text-white position-absolute"
+													style={{
+														top: "0.5rem",
+														right: "0.5rem",
+													}}
 												>
-													View options
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="col mb-5">
-									<div className="card h-100">
-										{/* Sale badge*/}
-										<div
-											className="badge bg-dark text-white position-absolute"
-											style={{
-												top: "0.5rem",
-												right: "0.5rem",
-											}}
-										>
-											Sale
-										</div>
-										{/* Product image*/}
-										<img
-											className="card-img-top"
-											src="assets/img/products/2.png"
-											alt="..."
-										/>
-										{/* Product details*/}
-										<div className="card-body p-4">
-											<div className="text-center">
-												{/* Product name*/}
-												<h5 className="fw-bolder">
-													Special Item
-												</h5>
-												{/* Product reviews*/}
-												<div className="d-flex justify-content-center small text-warning mb-2">
-													<div className="bi-star-fill" />
-													<div className="bi-star-fill" />
-													<div className="bi-star-fill" />
-													<div className="bi-star-fill" />
-													<div className="bi-star-fill" />
+													Sale
 												</div>
-												{/* Product price*/}
-												<span className="text-muted text-decoration-line-through">
-													$20.00
-												</span>
-												$18.00
+											)}
+											{/* Product image*/}
+											<img
+												className="card-img-top"
+												src={product.imagePath}
+												alt={product.name}
+											/>
+											{/* Product details*/}
+											<div className="card-body p-4">
+												<div className="text-center">
+													{/* Product name*/}
+													<h5 className="fw-bolder">
+														{product.name}
+													</h5>
+													{/* Product reviews*/}
+													<div className="d-flex justify-content-center small text-warning mb-2">
+														{[
+															...Array(
+																product.starsNum
+															),
+														].map((_, index) => (
+															<div
+																className="bi-star-fill"
+																key={`filled-${index}`}
+															/>
+														))}
+														{[
+															...Array(
+																5 -
+																	product.starsNum
+															),
+														].map((_, index) => (
+															<div
+																className="bi-star"
+																key={`empty-${index}`}
+															/>
+														))}
+													</div>
+													{/* Product price*/}
+													<span
+														className={
+															product.discountedPrice &&
+															`text-muted text-decoration-line-through`
+														}
+													>
+														${product.originalPrice}
+													</span>
+													<span className="text-success fw-bold fs-5">
+														{product.discountedPrice &&
+															` $${product.discountedPrice}`}
+													</span>
+												</div>
 											</div>
-										</div>
-										{/* Product actions*/}
-										<div className="card-footer p-4 pt-0 border-top-0 bg-transparent">
-											<div className="text-center">
-												<a
-													className="btn btn-outline-dark mt-auto"
-													href="#"
-												>
-													Add to cart
-												</a>
+											{/* Product actions*/}
+											<div className="card-footer p-4 pt-0 border-top-0 bg-transparent">
+												<div className="text-center">
+													<a
+														className="btn btn-outline-dark mt-auto"
+														// href="#"
+														onClick={() =>
+															addToCart(
+																product.id
+															)
+														}
+													>
+														Add to cart
+													</a>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div className="col mb-5">
-									<div className="card h-100">
-										{/* Sale badge*/}
-										<div
-											className="badge bg-dark text-white position-absolute"
-											style={{
-												top: "0.5rem",
-												right: "0.5rem",
-											}}
-										>
-											Sale
-										</div>
-										{/* Product image*/}
-										<img
-											className="card-img-top"
-											src="assets/img/products/3.png"
-											alt="..."
-										/>
-										{/* Product details*/}
-										<div className="card-body p-4">
-											<div className="text-center">
-												{/* Product name*/}
-												<h5 className="fw-bolder">
-													Sale Item
-												</h5>
-												{/* Product price*/}
-												<span className="text-muted text-decoration-line-through">
-													$50.00
-												</span>
-												$25.00
-											</div>
-										</div>
-										{/* Product actions*/}
-										<div className="card-footer p-4 pt-0 border-top-0 bg-transparent">
-											<div className="text-center">
-												<a
-													className="btn btn-outline-dark mt-auto"
-													href="#"
-												>
-													Add to cart
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
+								))}
+
+								<Snackbar
+									open={openSnackBar}
+									anchorOrigin={{
+										vertical: "bottom",
+										horizontal: "center",
+									}}
+									autoHideDuration={2000}
+									onClose={handleCloseSnackBar}
+								>
+									<Alert
+										severity="success"
+										variant="filled"
+										sx={{ width: "100%" }}
+										onClose={handleCloseSnackBar}
+									>
+										Successfully added to the cart!
+									</Alert>
+								</Snackbar>
 								<div className="col mb-5">
 									<div className="card h-100">
 										{/* Product image*/}

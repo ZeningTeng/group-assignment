@@ -10,10 +10,16 @@ import {
 	MDBRow,
 	MDBTypography,
 } from "mdb-react-ui-kit";
-import React from "react";
+import React, { useContext } from "react";
 import "./ShoppingCart.css";
+import { Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../GlobalProvider";
 
 export default function ShoppingCart() {
+	const { addedItemsInCart, setAddedItemsInCart } = useContext(AppContext);
+	const navigate = useNavigate();
+	console.warn(addedItemsInCart);
+
 	return (
 		<section className="h-100 h-custom" style={{ backgroundColor: "#eee" }}>
 			<MDBContainer className="py-5 h-100">
@@ -24,13 +30,13 @@ export default function ShoppingCart() {
 								<MDBRow>
 									<MDBCol lg="7">
 										<MDBTypography tag="h5">
-											<a href="/" className="text-body">
+											<Link to="/">
 												<MDBIcon
 													fas
 													icon="angle-left"
 												/>{" "}
 												Continue shopping
-											</a>
+											</Link>
 										</MDBTypography>
 
 										<hr />
@@ -47,8 +53,8 @@ export default function ShoppingCart() {
 											</div>
 											<div>
 												<p>
-													<span className="text-muted">
-														Sort by:
+													<span className="">
+														{`Sort by: `}
 													</span>
 													<a
 														href="#!"
@@ -334,7 +340,7 @@ export default function ShoppingCart() {
 														tag="h5"
 														className="mb-0"
 													>
-														Card details
+														Estimated Price
 													</MDBTypography>
 													<MDBCardImage
 														src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp"
@@ -348,105 +354,56 @@ export default function ShoppingCart() {
 												</div>
 
 												<p className="small">
-													Card type
+													Provided Card type
 												</p>
-												<a
+												{/* <a
 													href="visa"
 													type="submit"
 													className="text-white"
-												>
-													<MDBCardImage
-														className="me-2"
-														width="45px"
-														src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
-														alt="Visa"
-													/>
-												</a>
-												<a
+												> */}
+												<MDBCardImage
+													className="me-2"
+													width="45px"
+													src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+													alt="Visa"
+												/>
+												{/* </a> */}
+												{/* <a
 													href="American Express"
 													type="submit"
 													className="text-white"
-												>
-													<MDBCardImage
-														className="me-2"
-														width="45px"
-														src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
-														alt="American-Express"
-													/>
-												</a>
-												<a
+												> */}
+												<MDBCardImage
+													className="me-2"
+													width="45px"
+													src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+													alt="American-Express"
+												/>
+												{/* </a> */}
+												{/* <a
 													href="Mastercard"
 													type="submit"
 													className="text-white"
-												>
-													<MDBCardImage
-														className="me-2"
-														width="45px"
-														src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
-														alt="Mastercard"
-													/>
-												</a>
-												<a
+												> */}
+												<MDBCardImage
+													className="me-2"
+													width="45px"
+													src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+													alt="Mastercard"
+												/>
+												{/* </a> */}
+												{/* <a
 													href="PayPal"
 													type="submit"
 													className="text-white"
-												>
-													<MDBCardImage
-														className="me-2"
-														width="45px"
-														src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.png"
-														alt="PayPal acceptance mark"
-													/>
-												</a>
-
-												<form className="mt-4">
-													<MDBInput
-														className="mb-4"
-														label="Cardholder's Name"
-														type="text"
-														size="lg"
-														placeholder="Cardholder's Name"
-														contrast
-													/>
-
-													<MDBInput
-														className="mb-4"
-														label="Card Number"
-														type="text"
-														size="lg"
-														minLength="19"
-														maxLength="19"
-														placeholder="1234 5678 9012 3457"
-														contrast
-													/>
-
-													<MDBRow className="mb-4">
-														<MDBCol md="6">
-															<MDBInput
-																className="mb-4"
-																label="Expiration"
-																type="text"
-																size="lg"
-																minLength="7"
-																maxLength="7"
-																placeholder="MM/YYYY"
-																contrast
-															/>
-														</MDBCol>
-														<MDBCol md="6">
-															<MDBInput
-																className="mb-4"
-																label="Cvv"
-																type="text"
-																size="lg"
-																minLength="3"
-																maxLength="3"
-																placeholder="&#9679;&#9679;&#9679;"
-																contrast
-															/>
-														</MDBCol>
-													</MDBRow>
-												</form>
+												> */}
+												<MDBCardImage
+													className="me-2"
+													width="45px"
+													src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.png"
+													alt="PayPal acceptance mark"
+												/>
+												{/* </a> */}
 
 												<hr />
 
@@ -481,6 +438,9 @@ export default function ShoppingCart() {
 													color="info"
 													block
 													size="lg"
+													onClick={() =>
+														navigate("/checkout")
+													}
 												>
 													<div className="d-flex justify-content-between">
 														<span>$4818.00</span>
