@@ -63,7 +63,8 @@ function HomePage() {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 	const navigate = useNavigate();
-	const { cartCount, setCartCount } = useContext(AppContext);
+	const { cartCount, setCartCount, addedItemsInCart, setAddedItemsInCart } =
+		useContext(AppContext);
 	const [openSnackBar, setOpenSnackBar] = useState(false);
 
 	useEffect(() => {
@@ -110,8 +111,19 @@ function HomePage() {
 		navigate("/login");
 	};
 
-	const addToCart = () => {
-		setCartCount(cartCount + 1);
+	const addToCart = (id) => {
+		// console.warn(id);
+		let allItems = [...addedItemsInCart];
+		if (!allItems.find((item) => item.id === id)) {
+			allItems.push({ id: id, count: 1 });
+		} else {
+			allItems = allItems.map((item) =>
+				item.id === id ? { ...item, count: item.count + 1 } : item
+			);
+		}
+		setAddedItemsInCart(allItems);
+		setCartCount(allItems.length); // count by items
+
 		setOpenSnackBar(true);
 	};
 
@@ -442,7 +454,7 @@ function HomePage() {
 							<div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 								{/* first product */}
 								{products.map((product) => (
-									<div className="col mb-5">
+									<div className="col mb-5" key={product.id}>
 										<div className="card h-100">
 											{/* Sale badge*/}
 											{product.discountedPrice && (
@@ -475,16 +487,22 @@ function HomePage() {
 															...Array(
 																product.starsNum
 															),
-														].map(() => (
-															<div className="bi-star-fill" />
+														].map((_, index) => (
+															<div
+																className="bi-star-fill"
+																key={`filled-${index}`}
+															/>
 														))}
 														{[
 															...Array(
 																5 -
 																	product.starsNum
 															),
-														].map(() => (
-															<div className="bi-star" />
+														].map((_, index) => (
+															<div
+																className="bi-star"
+																key={`empty-${index}`}
+															/>
 														))}
 													</div>
 													{/* Product price*/}
@@ -496,8 +514,10 @@ function HomePage() {
 													>
 														${product.originalPrice}
 													</span>
-													{product.discountedPrice &&
-														` $${product.discountedPrice}`}
+													<span className="text-success fw-bold fs-5">
+														{product.discountedPrice &&
+															` $${product.discountedPrice}`}
+													</span>
 												</div>
 											</div>
 											{/* Product actions*/}
@@ -505,7 +525,12 @@ function HomePage() {
 												<div className="text-center">
 													<a
 														className="btn btn-outline-dark mt-auto"
-														href="#"
+														// href="#"
+														onClick={() =>
+															addToCart(
+																product.id
+															)
+														}
 													>
 														Add to cart
 													</a>
