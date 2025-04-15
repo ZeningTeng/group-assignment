@@ -1,0 +1,32 @@
+export const products = [
+	{
+		id: 1,
+		name: "Diamond Whale Tail",
+		sale: true,
+		originalPrice: 35.0,
+		discountedPrice: null,
+		imagePath: "assets/img/products/1.png",
+		starsNum: 3,
+		available: true,
+	},
+	{
+		id: 2,
+		name: "Lovely Cat Face",
+		sale: true,
+		originalPrice: 20.0,
+		discountedPrice: 18.55,
+		imagePath: "assets/img/products/2.png",
+		starsNum: 4,
+		available: true,
+	},
+	{
+		id: 3,
+		name: "Fortune Tiger Lord",
+		sale: true,
+		originalPrice: 50.25,
+		discountedPrice: 29.99,
+		imagePath: "assets/img/products/3.png",
+		starsNum: 5,
+		available: false,
+	},
+];
