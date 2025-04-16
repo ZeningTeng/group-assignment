@@ -186,3 +186,36 @@
     font-size: 0.75rem;
     margin-top: 6px;
   }
+
+.signup-success-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f7fb;
+  }
+  
+  .signup-success-card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .success-icon {
+    font-size: 5rem;
+    color: #2ecc71;
+    margin-bottom: 20px;
+  }
+  
+  .signup-success-card h2 {
+    color: #333;
+    margin-bottom: 16px;
+  }
+  
+  .signup-success-card p {
+    color: #666;
+  }

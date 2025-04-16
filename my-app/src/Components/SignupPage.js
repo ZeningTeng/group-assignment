@@ -16,6 +16,7 @@ const SignupPage = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
@@ -83,7 +84,13 @@ const SignupPage = () => {
         type: "user" 
       });
       
-      navigate('/login');
+      setFormSuccess(true);
+      
+      // Redirecting to login after showing success message
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+      
     } catch (err) {
       const errorMessage = err.response?.data?.error || "An error occurred during registration";
       
@@ -98,6 +105,20 @@ const SignupPage = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (formSuccess) {
+    return (
+      <div className="signup-success-container">
+        <div className="signup-success-card">
+          <div className="success-icon">
+            <i className="bi bi-check-circle-fill"></i>
+          </div>
+          <h2>Registration Successful!</h2>
+          <p>Your account has been created. Redirecting you to login...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="signup-page-container">
