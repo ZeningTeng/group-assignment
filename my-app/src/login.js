@@ -19,13 +19,9 @@ const LoginPage = () => {
     try {
       const response = await axios.post('http://localhost:8000/login', { name, password },{withCredentials:true});
       localStorage.setItem('token', response.data.token);
-     console.log('用户类型:', response.data.user.type);
-     console.log('用户类型1:', response.data.token);
-      if(response.data.user.type==="admin"){
-      navigate('/Homeadmin');}
-      else{
+    
         navigate('/');
-      }
+      
       
     
     } catch (err) {

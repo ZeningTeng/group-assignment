@@ -101,16 +101,18 @@ function HomePage() {
 		setToken(null);
 		setUserInfo(null);
 		handleMenuClose();
-		navigate("/login");
+		navigate("/");
 	};
 	const handleProfile = () => {
 		handleMenuClose();
 		navigate("/profile");
 	};
 	const goToLogin = () => {
-		navigate("/login");
+		navigate("/login", { state: { userInfo } });
 	};
-
+	const handleControlPanel = () => {
+		navigate("/controlPanel", { state: { userInfo } });
+	};
 	const addToCart = (id, productName, imagePath, weight, material, price) => {
 		// console.warn(id);
 		let allItems = [...addedItemsInCart];
@@ -230,6 +232,7 @@ function HomePage() {
 													All Products
 												</a>
 											</li>
+										
 											<li>
 												<hr className="dropdown-divider" />
 											</li>
@@ -250,6 +253,11 @@ function HomePage() {
 												</a>
 											</li>
 										</ul>
+									</li>
+									<li className="nav-item">
+											{userInfo && userInfo.type === "admin" ? (
+  									<Button onClick={handleControlPanel}>Control Panel</Button>) : null}
+
 									</li>
 								</ul>
 								<SearchBar />
@@ -288,7 +296,12 @@ function HomePage() {
 												>
 													{userInfo.name}
 												</Typography>
+												<Button onClick={handleSignOut}>
+												 signout
+												</Button>
 											</Box>
+											
+											
 										) : (
 											<Button onClick={goToLogin}>
 												Login Page

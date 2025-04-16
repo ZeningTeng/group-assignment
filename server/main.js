@@ -24,7 +24,7 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    image:{type: String},
+    
     type:{type:String}
   });
   
@@ -74,12 +74,10 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
  *         description: Validation failed
  */
 
-  app.post('/user/create', async (req, res) => {
+  app.post('/createUser', async (req, res) => {
     
-      const { name, email, password } = req.body;
-      if (!emailRegex.test(email)|| !namePattern.test(name)||!passPattern.test(password)) {
-        return res.status(400).json({ error: 'Validation failed.' });
-      }
+      const { name, email, password,type } = req.body;
+     
    
       const hashedPassword = await bcrypt.hash(password, 10);
     
@@ -87,7 +85,8 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
       const newUser = new User({
         name,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        type
       });
       
       await newUser.save();
@@ -126,9 +125,23 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
  *         description: notfound
  *       
  */
+app.get('/searchU', async (req, res) => {
+  const { name } = req.query; 
+   
+  const user = await User.findOne({ name:name});
+  return res.status(200).json({ user });
+  
+});
+app.get('/searchP', async (req, res) => {
+  const { name } = req.query; 
+     console.log("jdioa");
+  const product = await Products.findOne({ name:name});
+  return res.status(200).json({ product });
+  
+});
     app.put('/user/edit', async (req, res) => {
        
-          const { email,name, password } = req.body;
+          const { name } = req.body;
        
           const user = await User.findOne({ email });
           if (!user) {
@@ -192,10 +205,11 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
          return res.status(404).json({ error: "User not found" });
        }
       
-      
-         if (password !== user.password) {
-         return res.status(400).json({ error: "Invalid password" });
-       }
+       const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(401).json({ error: 'invalid password' });
+  }
+        
    
        const token = jwt.sign(
          { id: user._id, name: user.name },
@@ -209,6 +223,7 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
        } });
      
    });
+   
     /**
  * @swagger
  * /user/delete:
@@ -238,16 +253,26 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
  *       404:
  *         description: notfound
  */
-app.delete('/user/delete', async (req, res) => {
+app.delete('/deleteU', async (req, res) => {
    
-      const { email } = req.body;
-      const user = await User.findOneAndDelete({ email });
+      const { name } = req.body;
+      const user = await User.findOneAndDelete({ name:name });
       if (!user) {
         return res.status(404).json({ error: 'User not found.' });
       }
       return res.status(200).json({ message: 'User deleted successfully.' });
     
   });
+  app.delete('/deleteP', async (req, res) => {
+   
+    const { name } = req.body;
+    const user = await Products.findOneAndDelete({ name:name });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    return res.status(200).json({ message: 'User deleted successfully.' });
+  
+});
   /**
  * @swagger
  * /user/getall:

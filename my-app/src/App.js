@@ -13,7 +13,7 @@ import Login from "./login";
 import ShoppingCart from "./Components/ShoppingCart";
 import Checkout from "./Components/Checkout";
 import OrderHistory from "./Components/OrderHistory";
-
+import ControlPanel from "./controlPanel";
 function App() {
 	const token = localStorage.getItem("token");
 	const location = useLocation();
@@ -29,6 +29,7 @@ function App() {
 			<Route path="/cart" element={<ShoppingCart />} />
 			<Route path="/checkout" element={<Checkout />} />
 			<Route path="/order-history" element={<OrderHistory />} />
+			<Route path="/controlPanel" element={<ControlPanel />} />
 		</Routes>
 	);
 }
