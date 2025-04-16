@@ -130,9 +130,9 @@ function HomePage() {
 			);
 		}
 		setAddedItemsInCart(allItems);
-		setCartCount(allItems.length); // count by items
-
+		setCartCount(allItems.length); // count by types of items
 		setOpenSnackBar(true);
+		sessionStorage.setItem("addedItemsInCart", JSON.stringify(allItems));
 	};
 
 	const handleCloseSnackBar = (event, reason) => {
