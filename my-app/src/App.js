@@ -7,6 +7,7 @@ import {
 	useNavigate,
 } from "react-router-dom";
 import { useEffect } from "react";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import Home from "./HomePage";
 import Result from "./Result";
 import Login from "./login";

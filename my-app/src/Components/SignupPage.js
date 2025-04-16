@@ -14,7 +14,9 @@ const SignupPage = () => {
   });
   
   const [errors, setErrors] = useState({});
-  
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -54,10 +56,14 @@ const SignupPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     
-    // Clearing error when user starts typing
+    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
     }
+  };
+
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -66,6 +72,8 @@ const SignupPage = () => {
     if (!validateForm()) {
       return;
     }
+    
+    setIsSubmitting(true);
     
     try {
       await axios.post("http://localhost:8000/user/create", {
@@ -86,6 +94,8 @@ const SignupPage = () => {
       } else {
         setErrors(prev => ({ ...prev, general: errorMessage }));
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -102,62 +112,88 @@ const SignupPage = () => {
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="name">Full Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={errors.name ? "error" : ""}
-                  placeholder="Enter your full name"
-                />
+                <div className="input-with-icon">
+                  <i className="bi bi-person"></i>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={errors.name ? "error" : ""}
+                    placeholder="Enter your full name"
+                  />
+                </div>
                 {errors.name && <span className="error-message">{errors.name}</span>}
               </div>
               
               <div className="form-group">
                 <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={errors.email ? "error" : ""}
-                  placeholder="Enter your email address"
-                />
+                <div className="input-with-icon">
+                  <i className="bi bi-envelope"></i>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={errors.email ? "error" : ""}
+                    placeholder="Enter your email address"
+                  />
+                </div>
                 {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
               
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={errors.password ? "error" : ""}
-                  placeholder="Create a strong password"
-                />
+                <div className="input-with-icon">
+                  <i className="bi bi-lock"></i>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={errors.password ? "error" : ""}
+                    placeholder="Create a strong password"
+                  />
+                  <button
+                    type="button"
+                    className="toggle-password"
+                    onClick={togglePassword}
+                  >
+                    <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                  </button>
+                </div>
                 {errors.password && <span className="error-message">{errors.password}</span>}
               </div>
               
               <div className="form-group">
                 <label htmlFor="confirmPassword">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={errors.confirmPassword ? "error" : ""}
-                  placeholder="Confirm your password"
-                />
+                <div className="input-with-icon">
+                  <i className="bi bi-lock-fill"></i>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className={errors.confirmPassword ? "error" : ""}
+                    placeholder="Confirm your password"
+                  />
+                </div>
                 {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
               </div>
               
-              <button type="submit" className="signup-button">
-                Create Account
+              <button type="submit" className="signup-button" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Creating Account...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
               </button>
             </form>
             

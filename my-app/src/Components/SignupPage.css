@@ -32,6 +32,18 @@
     max-width: 450px;
   }
   
+  .form-container h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  
+  .subtitle {
+    color: #777;
+    margin-bottom: 30px;
+  }
+  
   .form-group {
     margin-bottom: 24px;
   }
@@ -43,43 +55,36 @@
     color: #444;
   }
   
-  .form-group input {
+  .input-with-icon {
+    position: relative;
+  }
+  
+  .input-with-icon input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 14px 16px 14px 50px;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     font-size: 1rem;
+    transition: all 0.3s ease;
   }
   
-  .signup-button {
-    width: 100%;
-    background-color: #FFD601;
-    color: white;
-    border: none;
-    padding: 16px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
+  .input-with-icon input:focus {
+    border-color: #daa520;
+    box-shadow: 0 0 0 4px rgba(218, 165, 32, 0.15);
+    outline: none;
   }
   
-  .auth-footer {
-    text-align: center;
-    margin-top: 30px;
-    color: #666;
-  }
-  
-  .login-link {
-    color: #FFD601;
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-.error {
+  .input-with-icon input.error {
     border-color: #e74c3c;
     box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.15);
+  }
+  
+  .input-with-icon i {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
   }
   
   .error-message {
@@ -96,4 +101,56 @@
     border-radius: 8px;
     margin-bottom: 20px;
     border-left: 4px solid #e74c3c;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #777;
+  }
+  
+  .signup-button {
+    width: 100%;
+    background-color: #daa520;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+  }
+  
+  .signup-button:hover {
+    background-color: #c69500;
+  }
+  
+  .signup-button:disabled {
+    background-color: #daa520;
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .auth-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #666;
+  }
+  
+  .login-link {
+    color: #daa520;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .login-link:hover {
+    text-decoration: underline;
   }
