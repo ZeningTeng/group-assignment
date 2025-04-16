@@ -44,7 +44,7 @@ function SearchBar() {
 			>
 				<input
 					type="name"
-					placeholder="Search some thing here"
+					placeholder="Search our products here"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					style={{ marginBottom: "10px", padding: "8px" }}
@@ -132,9 +132,9 @@ function HomePage() {
 			);
 		}
 		setAddedItemsInCart(allItems);
-		setCartCount(allItems.length); // count by items
-
+		setCartCount(allItems.length); // count by types of items
 		setOpenSnackBar(true);
+		sessionStorage.setItem("addedItemsInCart", JSON.stringify(allItems));
 	};
 
 	const handleCloseSnackBar = (event, reason) => {
@@ -166,7 +166,7 @@ function HomePage() {
 					<nav className="navbar navbar-expand-lg navbar-light bg-light">
 						<nav aria-label="breadcrumb"></nav>
 						<div className="container px-4 px-lg-1">
-							<a className="navbar-brand" href="#!">
+							<a className="navbar-brand" href="/">
 								Jewelry Shop
 							</a>
 							<button
@@ -189,7 +189,7 @@ function HomePage() {
 										<a
 											className="nav-link active"
 											aria-current="page"
-											href="#!"
+											href="/"
 										>
 											Home
 										</a>
@@ -261,35 +261,41 @@ function HomePage() {
 									</li>
 								</ul>
 								<SearchBar />
-								<form className="d-flex">
-									<Link to="/cart">
-										<button
-											className="btn btn-outline-dark"
-											type="submit"
+							</div>
+							<form className="d-flex ms-3">
+								<Link to="/cart">
+									<button
+										className="btn btn-outline-dark"
+										type="submit"
+									>
+										<i className="bi-cart-fill me-1" />
+										Cart
+										<span
+											className={`badge text-white ms-1 rounded-pill ${
+												cartCount > 0
+													? "bg-danger pulse"
+													: "bg-dark"
+											}`}
 										>
-											<i className="bi-cart-fill me-1" />
-											Cart
-											<span
-												className={`badge text-white ms-1 rounded-pill ${
-													cartCount > 0
-														? "bg-danger pulse"
-														: "bg-dark"
-												}`}
+											{cartCount}
+										</span>
+									</button>
+								</Link>
+							</form>
+							<ul className="navbar-nav ">
+								<li className="nav-item">
+									{userInfo ? (
+										<Box
+											sx={{
+												display: "flex",
+												alignItems: "center",
+											}}
+										>
+											<Typography
+												variant="subtitle1"
+												sx={{ marginRight: 2 }}
 											>
-												{cartCount}
-											</span>
-										</button>
-									</Link>
-								</form>
-								<ul className="navbar-nav ">
-									<li className="nav-item">
-										{userInfo ? (
-											<Box
-												sx={{
-													display: "flex",
-													alignItems: "center",
-												}}
-											>
+
 												<Typography
 													variant="subtitle1"
 													sx={{ marginRight: 2 }}
@@ -310,6 +316,7 @@ function HomePage() {
 									</li>
 								</ul>
 							</div>
+
 						</div>
 					</nav>
 					{/* Header*/}
