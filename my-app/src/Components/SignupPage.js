@@ -144,29 +144,36 @@ const SignupPage = () => {
                 {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
               
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <div className="input-with-icon">
-                  <i className="bi bi-lock"></i>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={errors.password ? "error" : ""}
-                    placeholder="Create a strong password"
-                  />
-                  <button
-                    type="button"
-                    className="toggle-password"
-                    onClick={togglePassword}
-                  >
-                    <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
-                  </button>
-                </div>
-                {errors.password && <span className="error-message">{errors.password}</span>}
-              </div>
+							<div className="form-group">
+				<label htmlFor="password">Password</label>
+				<div className="input-with-icon">
+					<i className="bi bi-lock"></i>
+					<input
+					type={showPassword ? "text" : "password"}
+					id="password"
+					name="password"
+					value={formData.password}
+					onChange={handleChange}
+					className={errors.password ? "error" : ""}
+					placeholder="Create a strong password"
+					/>
+					<button
+					type="button"
+					className="toggle-password"
+					onClick={togglePassword}
+					>
+					<i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+					</button>
+				</div>
+				{errors.password && <span className="error-message">{errors.password}</span>}
+				
+				<div className="password-strength-meter">
+					<div className={`strength-bar ${formData.password.length > 0 ? "strength-weak" : ""}`}></div>
+					<div className={`strength-bar ${formData.password.length >= 8 ? "strength-medium" : ""}`}></div>
+					<div className={`strength-bar ${/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z])/.test(formData.password) ? "strength-strong" : ""}`}></div>
+				</div>
+				<div className="password-hint">Password should contain at least 8 characters with uppercase, lowercase, number and special character</div>
+				</div>
               
               <div className="form-group">
                 <label htmlFor="confirmPassword">Confirm Password</label>
