@@ -111,11 +111,19 @@ function HomePage() {
 		navigate("/login");
 	};
 
-	const addToCart = (id) => {
+	const addToCart = (id, productName, imagePath, weight, material, price) => {
 		// console.warn(id);
 		let allItems = [...addedItemsInCart];
 		if (!allItems.find((item) => item.id === id)) {
-			allItems.push({ id: id, count: 1 });
+			allItems.push({
+				id: id,
+				count: 1,
+				productName: productName,
+				imagePath: imagePath,
+				weight: weight,
+				material: material,
+				price: price,
+			});
 		} else {
 			allItems = allItems.map((item) =>
 				item.id === id ? { ...item, count: item.count + 1 } : item
@@ -523,17 +531,22 @@ function HomePage() {
 											{/* Product actions*/}
 											<div className="card-footer p-4 pt-0 border-top-0 bg-transparent">
 												<div className="text-center">
-													<a
+													<button
 														className="btn btn-outline-dark mt-auto"
-														// href="#"
 														onClick={() =>
 															addToCart(
-																product.id
+																product.id,
+																product.name,
+																product.imagePath,
+																product.weight,
+																product.material,
+																product.discountedPrice ||
+																	product.originalPrice
 															)
 														}
 													>
 														Add to cart
-													</a>
+													</button>
 												</div>
 											</div>
 										</div>

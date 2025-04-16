@@ -12,13 +12,12 @@ import {
 } from "mdb-react-ui-kit";
 import React, { useContext } from "react";
 // import "./ShoppingCart.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../GlobalProvider";
 
 export default function Checkout() {
+	const navigate = useNavigate();
 	const { addedItemsInCart, setAddedItemsInCart } = useContext(AppContext);
-
-	console.warn(addedItemsInCart);
 
 	return (
 		<section className="h-100 h-custom" style={{ backgroundColor: "#eee" }}>
@@ -183,6 +182,11 @@ export default function Checkout() {
 													color="warning"
 													block
 													size="lg"
+													onClick={() =>
+														navigate(
+															"/order-history"
+														)
+													}
 												>
 													<div className="d-flex justify-content-center">
 														{/* <span>$4818.00</span> */}
@@ -196,19 +200,20 @@ export default function Checkout() {
 
 												<MDBBtn
 													color="info"
+													className="text-primary"
 													block
 													size="lg"
+													onClick={() =>
+														navigate("/")
+													}
 												>
-													<Link to="/">
-														<div className="d-flex justify-content-center">
-															{/* <span>$4818.00</span> */}
+													<div className="d-flex justify-content-center">
+														{/* <span>$4818.00</span> */}
 
-															<span>
-																Continue
-																shopping
-															</span>
-														</div>
-													</Link>
+														<span>
+															Continue shopping
+														</span>
+													</div>
 												</MDBBtn>
 											</MDBCardBody>
 										</MDBCard>

@@ -12,6 +12,7 @@ import Result from "./Result";
 import Login from "./login";
 import ShoppingCart from "./Components/ShoppingCart";
 import Checkout from "./Components/Checkout";
+import OrderHistory from "./Components/OrderHistory";
 
 function App() {
 	const token = localStorage.getItem("token");
@@ -27,6 +28,7 @@ function App() {
 			<Route path="/Login" element={<Login />} />
 			<Route path="/cart" element={<ShoppingCart />} />
 			<Route path="/checkout" element={<Checkout />} />
+			<Route path="/order-history" element={<OrderHistory />} />
 		</Routes>
 	);
 }
