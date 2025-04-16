@@ -7,10 +7,13 @@ import {
 	useNavigate,
 } from "react-router-dom";
 import { useEffect } from "react";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import Home from "./HomePage";
 import Result from "./Result";
 import Login from "./login";
 import ShoppingCart from "./Components/ShoppingCart";
+import SignupPage from './Components/SignupPage';
+
 
 function App() {
 	const token = localStorage.getItem("token");
@@ -25,6 +28,7 @@ function App() {
 			<Route path="/Result" element={<Result />} />
 			<Route path="/Login" element={<Login />} />
 			<Route path="/cart" element={<ShoppingCart />} />
+			<Route path="/signup" element={<SignupPage />} />
 		</Routes>
 	);
 }

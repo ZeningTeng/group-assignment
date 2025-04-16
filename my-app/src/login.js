@@ -125,11 +125,13 @@ const LoginPage = () => {
                        style={{ fontSize: "14px", color: "#007bff", textDecoration: "none" }}>
                       Forgot Password?
                     </a>
-                    <a href="#" 
-                       className="text-link" 
-                       style={{ fontSize: "14px", color: "#007bff", textDecoration: "none" }}>
-                      Sign Up
-                    </a>
+                    <a
+                        onClick={() => navigate('/signup')}
+                        className="text-link"
+                        style={{ fontSize: "14px", color: "#007bff", textDecoration: "none", cursor: "pointer" }}
+                      >
+                        Sign Up
+                      </a>
                   </div>
                 </form>
               </div>
