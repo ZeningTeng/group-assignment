@@ -1,49 +1,50 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const multer = require('multer');
-const path = require('path');
-const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
+const express = require("express");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const multer = require("multer");
+const path = require("path");
+const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
 
-const cors = require('cors');
-
+const cors = require("cors");
 
 const app = express();
-app.use(cors({
-  origin: 'http://localhost:3000', 
-  credentials: true,
-}));
+app.use(
+	cors({
+		origin: "http://localhost:3000",
+		credentials: true,
+	})
+);
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/assets', express.static(path.join(__dirname, '../assets')));
-mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcmw.mongodb.net/ourDataBase?retryWrites=true&w=majority&appName=6150project', {
-  });
-  const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
-    image:{type: String},
-    type:{type:String}
-  });
-  
- 
-  const productSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    price: { type: String, required: true },
-    count: { type: String, required: true },
-    description: { type: String, required: true },
-    image:{type: String}
-  });
-  
-  const User = mongoose.model('User', userSchema);
-  const Products = mongoose.model('Product', productSchema);
-  let emailRegex    = /^[a-zA-Z0-9]+@northeastern\.edu$/;
-   let namePattern= /^[a-zA-Z]+ [a-zA-Z]+$/;
+app.use("/assets", express.static(path.join(__dirname, "../assets")));
+mongoose.connect(
+	"mongodb+srv://t15998627020:6150finalproject@6150project.kikhcmw.mongodb.net/ourDataBase?retryWrites=true&w=majority&appName=6150project",
+	{}
+);
+const userSchema = new mongoose.Schema({
+	name: { type: String, required: true },
+	email: { type: String, required: true },
+	password: { type: String, required: true },
+	image: { type: String },
+	type: { type: String },
+});
 
-   let passPattern= /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
+const productSchema = new mongoose.Schema({
+	name: { type: String, required: true },
+	price: { type: String, required: true },
+	count: { type: String, required: true },
+	description: { type: String, required: true },
+	image: { type: String },
+});
 
+const User = mongoose.model("User", userSchema);
+const Products = mongoose.model("Product", productSchema);
+let emailRegex = /^[a-zA-Z0-9]+@northeastern\.edu$/;
+let namePattern = /^[a-zA-Z]+ [a-zA-Z]+$/;
+
+let passPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
 
 /**
  * @swagger
@@ -74,26 +75,21 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
  *         description: Validation failed
  */
 
-  app.post('/user/create', async (req, res) => {
-    
-      const { name, email, password } = req.body;
-      if (!emailRegex.test(email)|| !namePattern.test(name)||!passPattern.test(password)) {
-        return res.status(400).json({ error: 'Validation failed.' });
-      }
-   
-      const hashedPassword = await bcrypt.hash(password, 10);
-    
- 
-      const newUser = new User({
-        name,
-        email,
-        password: hashedPassword
-      });
-      
-      await newUser.save();
-      return res.status(201).json({ message: 'User created successfully.' });
-    
-    });
+app.post("/createUser", async (req, res) => {
+	const { name, email, password, type } = req.body;
+
+	const hashedPassword = await bcrypt.hash(password, 10);
+
+	const newUser = new User({
+		name,
+		email,
+		password: hashedPassword,
+		type,
+	});
+
+	await newUser.save();
+	return res.status(201).json({ message: "User created successfully." });
+});
 /**
  * @swagger
  * /user/edit:
@@ -109,112 +105,92 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
  *             properties:
  *               name:
  *                 type: string
- *          
+ *
  *               email:
  *                 type: string
  *                 example: "johnD@northeastern.edu"
  *               password:
  *                  type: string
- *           
+ *
  *     responses:
  *       200:
  *          description: success
- *        
- *        
+ *
+ *
  *
  *       404:
  *         description: notfound
- *       
+ *
  */
-    app.put('/user/edit', async (req, res) => {
-       
-          const { email,name, password } = req.body;
-       
-          const user = await User.findOne({ email });
-          if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
-          }
-         
-          
-            if (!namePattern.test(name)) {
-              return res.status(400).json({ error: 'Validation failed.' });
-            }
-            user.name = name;
-          
-        
-         
-            if (!passPattern.test(password)) {
-              return res.status(400).json({ error: 'Validation failed.' });
-            }
-            user.password = await bcrypt.hash(password, 10);
-          
-          await user.save();
-          return res.status(200).json({ message: 'User updated successfully.' });
-        
-      });
-      const authenticateToken = (req, res, next) => {
- 
-        const authHeader = req.headers.authorization;
-        const token = authHeader && authHeader.split(' ')[1];
-      
-        if (!token) {
-          return res.sendStatus(401); 
-        }
-      
-        jwt.verify(token, 'auth', (err, decoded) => {
-          if (err) {
-            return res.sendStatus(403); 
-          }
-       
-          req.userId = decoded.id;
-          next();
-        });
-      };
-      
-      app.get('/profile', authenticateToken, async (req, res) => {
-       
-      
-          const user = await User.findById(req.userId);
-          if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-          }
-       
-          res.status(200).json({
-            user});
-        
-      });
-   app.post('/Login', async (req, res) => {
-     const { name, password } = req.body;
-   
-       
-       const user = await User.findOne({ name });
-       if (!user) {
-         return res.status(404).json({ error: "User not found" });
-       }
-      
-      
-         if (password !== user.password) {
-         return res.status(400).json({ error: "Invalid password" });
-       }
-   
-       const token = jwt.sign(
-         { id: user._id, name: user.name },
-         'auth',
-         { expiresIn: '1h' }
-       );
-       return res.status(200).json({ token,  user: {
-         id: user._id,
-         name: user.name,
-         type: user.type
-       } });
-     
-   });
-    /**
+app.put("/user/edit", async (req, res) => {
+	const { email, name, password } = req.body;
+
+	const user = await User.findOne({ email });
+	if (!user) {
+		return res.status(404).json({ error: "User not found." });
+	}
+
+	if (!namePattern.test(name)) {
+		return res.status(400).json({ error: "Validation failed." });
+	}
+	user.name = name;
+
+	if (!passPattern.test(password)) {
+		return res.status(400).json({ error: "Validation failed." });
+	}
+	user.password = await bcrypt.hash(password, 10);
+
+	await user.save();
+	return res.status(200).json({ message: "User updated successfully." });
+});
+const authenticateToken = (req, res, next) => {
+	const authHeader = req.headers.authorization;
+	const token = authHeader && authHeader.split(" ")[1];
+
+	if (!token) {
+		return res.sendStatus(401);
+	}
+
+	jwt.verify(token, "auth", (err, decoded) => {
+		if (err) {
+			return res.sendStatus(403);
+		}
+
+		req.userId = decoded.id;
+		next();
+	});
+};
+
+app.get("/profile", authenticateToken, async (req, res) => {
+	const user = await User.findById(req.userId);
+	if (!user) {
+		return res.status(404).json({ error: "User not found" });
+	}
+
+	res.status(200).json({
+		user,
+	});
+});
+
+app.post("/Login", async (req, res) => {
+	const { name, password } = req.body;
+
+	const user = await User.findOne({ name });
+	if (!user) {
+		return res.status(404).json({ error: "User not found" });
+	}
+
+	const isMatch = await bcrypt.compare(password, user.password);
+	if (!isMatch) {
+		return res.status(401).json({ error: "invalid password" });
+	}
+});
+/**
  * @swagger
  * /user/delete:
  *   delete:
  *     summary: delete a user
- *     
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -222,38 +198,36 @@ mongoose.connect('mongodb+srv://t15998627020:6150finalproject@6150project.kikhcm
  *           schema:
  *             type: object
  *             properties:
- *             
- *          
+ *
+ *
  *               email:
  *                 type: string
  *                 example: "johnD@northeastern.edu"
- *           
- *           
+ *
+ *
  *     responses:
  *       200:
  *          description: success
- *        
- *        
+ *
+ *
  *
  *       404:
  *         description: notfound
  */
-app.delete('/user/delete', async (req, res) => {
-   
-      const { email } = req.body;
-      const user = await User.findOneAndDelete({ email });
-      if (!user) {
-        return res.status(404).json({ error: 'User not found.' });
-      }
-      return res.status(200).json({ message: 'User deleted successfully.' });
-    
-  });
-  /**
+app.delete("/user/delete", async (req, res) => {
+	const { email } = req.body;
+	const user = await User.findOneAndDelete({ email });
+	if (!user) {
+		return res.status(404).json({ error: "User not found." });
+	}
+	return res.status(200).json({ message: "User deleted successfully." });
+});
+/**
  * @swagger
  * /user/getall:
  *   get:
  *     summary: get All users
- *     
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -261,65 +235,62 @@ app.delete('/user/delete', async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *             
- *         
- *           
- *           
+ *
+ *
+ *
+ *
  *     responses:
  *       200:
  *          description: success
- *        
- *        
  *
- *      
+ *
+ *
+ *
  */
-  app.get('/user/getAll', async (req, res) => {
-   
-      const users = await Product.find({}, { name: 1, email: 1, passoword: 1 });
-      return res.status(200).json({ users });
-    
-  });
+app.get("/user/getAll", async (req, res) => {
+	const users = await Product.find({}, { name: 1, email: 1, passoword: 1 });
+	return res.status(200).json({ users });
+});
 const storage = multer.diskStorage({
-    destination: (req, file, call) => {
-      call(null, 'image/'); 
-    },
-    filename: (req, file, call) => {
+	destination: (req, file, call) => {
+		call(null, "image/");
+	},
+	filename: (req, file, call) => {
+		call(null, req.body.email + path.extname(file.originalname));
+	},
+});
+app.get("/search", async (req, res) => {
+	const { name } = req.query;
+	console.log(name + " dwiadjoawjdwiao");
 
-      call(null, req.body.email+path.extname(file.originalname));
-    }
-  });
-  app.get('/search', async (req, res) => {
-   
-    const { name } = req.query;
-    console.log(name + " dwiadjoawjdwiao");
-  
+	const products = await Products.find({ name: new RegExp(name, "i") });
 
-    const products = await Products.find({ name: new RegExp(name, 'i') });
-    
-   
-    return res.status(200).json({ products });
-  });
-  
+	return res.status(200).json({ products });
+});
 
-  const fileFilter = (req, file, call) => {
-    const correct = /jpeg|jpg|png|gif/;
-    const extname = correct.test(path.extname(file.originalname).toLowerCase());
-    
-    if (extname) {
-      call(null, true);
-    } else {
-      call(new Error('Invalid file format. Only JPEG, PNG, and GIF are allowed.'));
-    }
-  };
-  
-  const upload = multer({ storage, fileFilter });
- 
-  /**
+const fileFilter = (req, file, call) => {
+	const correct = /jpeg|jpg|png|gif/;
+	const extname = correct.test(path.extname(file.originalname).toLowerCase());
+
+	if (extname) {
+		call(null, true);
+	} else {
+		call(
+			new Error(
+				"Invalid file format. Only JPEG, PNG, and GIF are allowed."
+			)
+		);
+	}
+};
+
+const upload = multer({ storage, fileFilter });
+
+/**
  * @swagger
  * /user/de:
  *   post:
  *     summary: upload file
- *     
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -333,59 +304,57 @@ const storage = multer.diskStorage({
  *                email:
  *                 type: string
  *                 example: "temp/file.jpg"
- *                  
- *           
- *           
+ *
+ *
+ *
  *     responses:
  *       201:
  *          description: success
- *        
- *        
  *
- *      
+ *
+ *
+ *
  */
-  app.post('/user/uploadImage', upload.single('image'), async (req, res) => {
-  
-      const { email } = req.body;
-      console.log('req.body:', req.body);
-  console.log('req.file:', req.file);
-      
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ error: 'User not found.' });
-      }
-     
-      if (user.image) {
-        return res.status(400).json({ error: 'Image already exists for this user.' });
-      }
-      
-      user.image = req.file.path;
-      await user.save();
-      return res.status(201).json({ message: 'Image uploaded successfully.', filePath: req.file.path });
-    
-  });
-            
+app.post("/user/uploadImage", upload.single("image"), async (req, res) => {
+	const { email } = req.body;
+	console.log("req.body:", req.body);
+	console.log("req.file:", req.file);
 
+	const user = await User.findOne({ email });
+	if (!user) {
+		return res.status(404).json({ error: "User not found." });
+	}
 
-  const swaggerJsdoc = require('swagger-jsdoc');
-  const swaggerUi = require('swagger-ui-express');
-  
+	if (user.image) {
+		return res
+			.status(400)
+			.json({ error: "Image already exists for this user." });
+	}
 
-  const swaggerOptions = {
-    definition: {
-      openapi: "3.0.0",
-      info: {
-        title: "Assignment 8 API",
-        version: "1.0.0",
-        description: "API documentation for Assignment 8"
-      }
-    },
-    apis: ["./main.js"] 
-  };
-  
-  const swaggerDocs = swaggerJsdoc(swaggerOptions);
-  app.use("/swag", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-  
-  
-app.listen(8000, () => {
+	user.image = req.file.path;
+	await user.save();
+	return res.status(201).json({
+		message: "Image uploaded successfully.",
+		filePath: req.file.path,
+	});
 });
+
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+const swaggerOptions = {
+	definition: {
+		openapi: "3.0.0",
+		info: {
+			title: "Assignment 8 API",
+			version: "1.0.0",
+			description: "API documentation for Assignment 8",
+		},
+	},
+	apis: ["./main.js"],
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use("/swag", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+app.listen(8000, () => {});
