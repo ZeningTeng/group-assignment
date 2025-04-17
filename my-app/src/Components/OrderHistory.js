@@ -10,11 +10,12 @@ import {
 	MDBRow,
 	MDBTypography,
 } from "mdb-react-ui-kit";
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 // import "./ShoppingCart.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../GlobalProvider";
 import { orders } from "../model/orderHistory";
+import ExpandableCard from "./ExpandableCard";
 
 export default function OrderHistory() {
 	const {
@@ -24,10 +25,11 @@ export default function OrderHistory() {
 		setCartTotalPrice,
 	} = useContext(AppContext);
 	const navigate = useNavigate();
+	const [expandedCard, setExpandedCard] = useState(null);
 
 	return (
 		<section
-			className="h-100 h-custom"
+			className="h-100 h-custom diamond-background"
 			style={{ backgroundColor: "#eee", minHeight: "100vh" }}
 		>
 			<MDBContainer className="py-5 h-100">
@@ -83,96 +85,27 @@ export default function OrderHistory() {
 												</p>
 											</div>
 										</div>
-										{/* added products */}
-										{orders.map((order, index) => (
-											<MDBCard
-												className="mb-3"
-												key={order.id}
-											>
-												<MDBCardBody>
-													<div className="d-flex justify-content-between">
-														<div className="d-flex flex-row align-items-center">
-															{/* <div>
-																<MDBCardImage
-																	src={
-																		item.imagePath
-																	}
-																	fluid
-																	className="rounded-3"
-																	style={{
-																		width: "65px",
-																	}}
-																	alt="Shopping item"
-																/>
-															</div> */}
-															<div className="ms-3">
-																<MDBTypography tag="h5">
-																	Order ID:{" "}
-																	{order.id}
-																</MDBTypography>
-																<p className="small mb-0">
-																	{
-																		order.expense
-																	}
-																</p>
-															</div>
-														</div>
-														<div className="d-flex flex-row align-items-center">
-															<div
-																style={{
-																	width: "120px",
-																}}
-															>
-																<MDBTypography
-																	tag="h5"
-																	className="fw-normal mb-0"
-																>
-																	Quantity:{" "}
-																	{
-																		order.expense
-																	}
-																</MDBTypography>
-															</div>
-															<div
-																style={{
-																	width: "80px",
-																}}
-															>
-																<MDBTypography
-																	tag="h5"
-																	className="mb-0"
-																>
-																	$
-																</MDBTypography>
-															</div>
-															<MDBBtn
-																color="info"
-																// block
-																size="small"
-																onClick={() =>
-																	navigate(
-																		"/checkout"
-																	)
-																}
-															>
-																refund
-															</MDBBtn>
-															<a
-																href="#!"
-																style={{
-																	color: "#cecece",
-																}}
-															>
-																<MDBIcon
-																	fas
-																	icon="trash-alt"
-																/>
-															</a>
-														</div>
-													</div>
-												</MDBCardBody>
-											</MDBCard>
+										{/* order history */}
+
+										{orders.map((order) => (
+											<ExpandableCard
+												key={order.orderId}
+												order={order}
+												expandedCard={expandedCard}
+												setExpandedCard={
+													setExpandedCard
+												}
+												navigate={navigate}
+											/>
 										))}
+									</MDBCol>
+									<MDBCol size="12" md="5">
+										<div
+											// src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp"
+											src="/assets/img/priceTag.png"
+											className="thanks-order-background mt-5"
+											alt="Avatar"
+										/>
 									</MDBCol>
 								</MDBRow>
 							</MDBCardBody>
