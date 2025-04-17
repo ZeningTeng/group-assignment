@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useContext} from "react";
 import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/material';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { AppContext } from "./GlobalProvider";
+import { Link } from "react-router-dom";
 function NavItem() {
+  
     const navigate = useNavigate();
   
     const handleClick = () => {
@@ -19,7 +23,9 @@ function NavItem() {
       </li>
     );
   }
+
 function SearchBar() {
+  
   const [name, setName] = useState('');
   const navigate = useNavigate();
    
@@ -59,7 +65,79 @@ const ResultPage = () => {
   if (!Array.isArray(results)) {
     results = [results];
   }
+  const [token, setToken] = useState(null);
+    
+  const [userInfo, setUserInfo] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+  const { cartCount, setCartCount, addedItemsInCart, setAddedItemsInCart } =
+ useContext(AppContext)
+  const [openSnackBar, setOpenSnackBar] = useState(false);
 
+	useEffect(() => {
+		const storedToken = localStorage.getItem("token");
+		if (storedToken) {
+			setToken(storedToken);
+
+			axios
+				.get("http://localhost:8000/profile", {
+					headers: {
+						Authorization: `Bearer ${storedToken}`,
+					},
+				})
+				.then((res) => {
+					console.log(res.data.user);
+					setUserInfo(res.data.user);
+				})
+				.catch((err) => {
+					console.error("failed", err);
+				});
+		}
+	}, []);
+const addToCart = (id, productName, imagePath, weight, material, price) => {
+// console.warn(id);
+let allItems = [...addedItemsInCart];
+if (!allItems.find((item) => item.id === id)) {
+  allItems.push({
+    id: id,
+    count: 1,
+    productName: productName,
+    imagePath: imagePath,
+    weight: weight,
+    material: material,
+    price: price,
+  });
+} else {
+  allItems = allItems.map((item) =>
+    item.id === id ? { ...item, count: item.count + 1 } : item
+  );
+}
+setAddedItemsInCart(allItems);
+setCartCount(allItems.length); 
+
+setOpenSnackBar(true);
+};
+	const handleMenuClose = () => {
+		setAnchorEl(null);
+	};
+const handleSignOut = () => {
+  localStorage.removeItem("token");
+  setToken(null);
+  setUserInfo(null);
+  handleMenuClose();
+  navigate("/");
+};
+const handleProfile = () => {
+  handleMenuClose();
+  navigate("/profile");
+};
+const goToLogin = () => {
+  navigate("/login");
+};
+const handleControlPanel = () => {
+  navigate("/controlPanel", { state: { userInfo } });
+};
   return (
     <div>
       
@@ -131,27 +209,62 @@ const ResultPage = () => {
                   </li>
                 </ul>
               </li>
+              <li className="nav-item">
+                                    {userInfo && userInfo.type === "admin" ? (
+                                  <Button onClick={handleControlPanel}>Control Panel</Button>) : null}
+              
+                                </li>
             </ul>
             <SearchBar />
             <form className="d-flex">
-              <button className="btn btn-outline-dark" type="submit">
-                <i className="bi-cart-fill me-1" />
-                Cart
-                <span className="badge bg-dark text-white ms-1 rounded-pill">
-                  0
-                </span>
-              </button>
-            </form>
+									<Link to="/cart">
+										<button
+											className="btn btn-outline-dark"
+											type="submit"
+										>
+											<i className="bi-cart-fill me-1" />
+											Cart
+											<span
+												className={`badge text-white ms-1 rounded-pill ${
+													cartCount > 0
+														? "bg-danger pulse"
+														: "bg-dark"
+												}`}
+											>
+												{cartCount}
+											</span>
+										</button>
+									</Link>
+								</form>
             <ul className="navbar-nav ">
               <li className="nav-item">
-                <a className="nav-link" href="loginPage/Login.html">
-                  Login
-                </a>
+                {userInfo ? (
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <Typography
+                                          variant="subtitle1"
+                                          sx={{ marginRight: 2 }}
+                                        >
+                                          {userInfo.name}
+                                        </Typography>
+                                        <Button onClick={handleSignOut}>
+                                         signout
+                                        </Button>
+                                      </Box>
+                                      
+                                      
+                                    ) : (
+                                      <Button onClick={goToLogin}>
+                                        Login Page
+                                      </Button>
+                                    )}
               </li>
             </ul>
-            <div className="spinner-border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
+        
           </div>
         </div>
       </nav>
@@ -192,26 +305,29 @@ const ResultPage = () => {
                   <CardMedia
                     component="img"
                     height="600"
-                    image={`http://localhost:8000${product.image}`}
+                    image={product.imagePath}
                     alt={product.name}
                     sx={{ marginTop: '1rem' }}
                   />
                 </CardContent>
 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    sx={{
-                      fontWeight: 'bold',
-                      textTransform: 'none',
-                      fontSize: '16px',
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    Add to Cart
-                  </Button>
+                <button
+														className="btn btn-outline-dark mt-auto"
+														onClick={() =>
+															addToCart(
+																product.id,
+																product.name,
+																product.imagePath,
+																product.weight,
+																product.material,
+																product.discountedPrice ||
+																	product.originalPrice
+															)
+														}
+													>
+														Add to cart
+													</button>
                 </Box>
               </Card>
             ))
