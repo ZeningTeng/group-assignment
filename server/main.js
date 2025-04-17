@@ -162,6 +162,27 @@ app.get("/searchP", async (req, res) => {
 	return res.status(200).json({ product });
 });
 
+// get all products
+app.get("/products", async (req, res) => {
+	try {
+		console.log("🔍 Fetching all products...");
+		const products = await Products.find();
+
+		const transformedProducts = products.map((product) => {
+			// change _id into id
+			const obj = product.toObject(); // convert Mongoose doc to plain JS object
+			obj.id = obj._id;
+			delete obj._id;
+			return obj;
+		});
+
+		return res.status(200).json({ products: transformedProducts }); // use plural for clarity
+	} catch (error) {
+		console.error("❌ Error fetching products:", error);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+});
+
 // get all orders based on user email
 app.get("/orders", async (req, res) => {
 	const { email } = req.body;
