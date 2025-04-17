@@ -5,13 +5,12 @@ import axios from "axios";
 
 function SearchBar() {
   const [name, setName] = useState("");
-
   const navigate = useNavigate();
-
+  const apiUrl = process.env.REACT_APP_EXPRESS_API_URL;
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    const response = await axios.get("http://localhost:8000/search", {
+    const response = await axios.get(apiUrl+"/search", {
       params: { name },
     });
 

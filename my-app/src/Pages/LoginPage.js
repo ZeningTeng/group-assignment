@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -16,23 +16,32 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        apiUrl + "/login",
-        { email, password },
+        apiUrl + "/user/login",
+        { email: email.toLowerCase(), password },
         { withCredentials: true }
       );
-      console.log("Response:", response.data);
+
       localStorage.setItem("token", response.data.token);
-      console.log("用户类型:", response.data.user.type);
-      console.log("用户类型1:", response.data.token);
-      if (response.data.user.type === "admin") {
-        navigate("/Homeadmin");
-      } else {
+      localStorage.setItem("userInfo", JSON.stringify(response.data));
+
+      if (response.data.role === "admin") {
+        navigate("/adminDashBoard");
+      } else if (response.data.role === "customer") {
         navigate("/");
       }
     } catch (err) {
       setError("wrong password");
     }
   };
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (storedToken && storedUserInfo) {
+      navigate("/");
+      alert("You are already logged in");
+    }
+  }, []);
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -119,7 +128,7 @@ const LoginPage = () => {
                         }}
                       ></i>
                     </div>
-                  </div>               
+                  </div>
                   {error && (
                     <div
                       className="error-message"
