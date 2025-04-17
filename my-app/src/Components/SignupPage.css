@@ -219,3 +219,51 @@
   .signup-success-card p {
     color: #666;
   }
+
+.signup-image-section {
+  position: relative;
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  display: none; 
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, rgba(96, 76, 76, 0.8), rgba(96, 76, 76, 0.4));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.welcome-text {
+  color: white;
+  text-align: center;
+}
+
+.welcome-text h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.welcome-text p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+@media (min-width: 768px) {
+  .signup-image-section {
+    display: block;
+  }
+  
+  .signup-form-section {
+    padding: 40px 60px;
+  }
+}

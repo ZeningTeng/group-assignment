@@ -1,26 +1,28 @@
 import {
-	BrowserRouter as Router,
-	Routes,
-	Route,
-	Navigate,
-	useLocation,
-	useNavigate,
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
 } from "react-router-dom";
 import { useEffect } from "react";
+
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Home from "./HomePage";
+import Home from "./Pages/HomePage";
+
 import Result from "./Result";
-import Login from "./login";
+import Login from "./Pages/login";
 import ShoppingCart from "./Components/ShoppingCart";
 import SignupPage from './Components/SignupPage';
 
 
 function App() {
-	const token = localStorage.getItem("token");
-	const location = useLocation();
-	const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const location = useLocation();
+  const navigate = useNavigate();
 
-	useEffect(() => {}, [location, navigate]);
+  useEffect(() => {}, [location, navigate]);
 
 	return (
 		<Routes>
@@ -34,9 +36,9 @@ function App() {
 }
 
 export default function AppWithRouter() {
-	return (
-		<Router>
-			<App />
-		</Router>
-	);
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
 }
