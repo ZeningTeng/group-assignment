@@ -51,8 +51,37 @@ const LoginPage = () => {
 		clipPath: "polygon(0% 50%, 85% 0%, 100% 50%, 85% 100%)",
 	};
 
+
+  const handleSubmit= async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8000/login', { name, password },{withCredentials:true});
+      localStorage.setItem('token', response.data.token);
+    
+        navigate('/');
+      
+      
+    
+    } catch (err) {
+      setError('wrong password');
+    }
+  };
+
 	return (
 		<div style={{ minHeight: "100vh", backgroundColor: "#fffdefd6" }}>
+
+			<div>
+				<button
+					type="button"
+					onClick={() => navigate("/")}
+					style={buttonStyle}
+				>
+					← Home
+				</button>
+			</div>
+
+
+
 			<div
 				style={{
 					backgroundImage: `url('/assets/img/loginpage/loginPageBg.png')`,
