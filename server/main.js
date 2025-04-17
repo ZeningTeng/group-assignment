@@ -22,16 +22,14 @@ app.use(
 app.use(cors({origin: 'http://localhost:3000', credentials: true}))
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/assets", express.static(path.join(__dirname, "../assets")));
 mongoose.connect(process.env.DB_URL, {});
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  image: { type: String },
   type: { type: String },
 });
-console.log("DB Connected")
+
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: String, required: true },
@@ -42,39 +40,10 @@ const productSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 const Products = mongoose.model("Product", productSchema);
-let emailRegex = /^[a-zA-Z0-9]+@northeastern\.edu$/;
+let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 let namePattern = /^[a-zA-Z]+ [a-zA-Z]+$/;
-
 let passPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
 
-/**
- * @swagger
- * /user/create:
- *   post:
- *     summary: Create a new user
- *     description: Register a user with name, email, and password.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: "John D"
- *               email:
- *                 type: string
- *                 example: "johnD@northeastern.edu"
- *               password:
- *                 type: string
- *                 example: "P@ssw0rd1"
- *     responses:
- *       201:
- *         description: User created
- *       400:
- *         description: Validation failed
- */
 
 app.post("/user/create", async (req, res) => {
   const { name, email, password } = req.body;
@@ -97,38 +66,7 @@ app.post("/user/create", async (req, res) => {
   await newUser.save();
   return res.status(201).json({ message: "User created successfully." });
 });
-/**
- * @swagger
- * /user/edit:
- *   put:
- *     summary: edit a user
- *     description: Register a user with name, email, and password.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *
- *               email:
- *                 type: string
- *                 example: "johnD@northeastern.edu"
- *               password:
- *                  type: string
- *
- *     responses:
- *       200:
- *          description: success
- *
- *
- *
- *       404:
- *         description: notfound
- *
- */
+
 app.put("/user/edit", async (req, res) => {
   const { email, name, password } = req.body;
 
@@ -178,16 +116,20 @@ app.get("/profile", authenticateToken, async (req, res) => {
     user,
   });
 });
-app.post("/Login", async (req, res) => {
-  const { name, password } = req.body;
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  console.log(email + " " + password);
 
-  const user = await User.findOne({ name });
+  const user = await User.findOne({ email });
   if (!user) {
     return res.status(404).json({ error: "User not found" });
   }
 
   if (password !== user.password) {
-    return res.status(400).json({ error: "Invalid password" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid password" });
+    }
   }
 
   const token = jwt.sign({ id: user._id, name: user.name }, "auth", {
@@ -202,35 +144,7 @@ app.post("/Login", async (req, res) => {
     },
   });
 });
-/**
- * @swagger
- * /user/delete:
- *   delete:
- *     summary: delete a user
- *
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *
- *
- *               email:
- *                 type: string
- *                 example: "johnD@northeastern.edu"
- *
- *
- *     responses:
- *       200:
- *          description: success
- *
- *
- *
- *       404:
- *         description: notfound
- */
+
 app.delete("/user/delete", async (req, res) => {
   const { email } = req.body;
   const user = await User.findOneAndDelete({ email });
@@ -239,31 +153,7 @@ app.delete("/user/delete", async (req, res) => {
   }
   return res.status(200).json({ message: "User deleted successfully." });
 });
-/**
- * @swagger
- * /user/getall:
- *   get:
- *     summary: get All users
- *
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *
- *
- *
- *
- *     responses:
- *       200:
- *          description: success
- *
- *
- *
- *
- */
+
 app.get("/user/getAll", async (req, res) => {
   const users = await Product.find({}, { name: 1, email: 1, passoword: 1 });
   return res.status(200).json({ users });
@@ -300,75 +190,6 @@ const fileFilter = (req, file, call) => {
 
 const upload = multer({ storage, fileFilter });
 
-/**
- * @swagger
- * /user/de:
- *   post:
- *     summary: upload file
- *
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *                image:
- *                 type: string
- *                 example: "johnD@northeastern.edu"
- *                email:
- *                 type: string
- *                 example: "temp/file.jpg"
- *
- *
- *
- *     responses:
- *       201:
- *          description: success
- *
- *
- *
- *
- */
-app.post("/user/uploadImage", upload.single("image"), async (req, res) => {
-  const { email } = req.body;
-  console.log("req.body:", req.body);
-  console.log("req.file:", req.file);
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ error: "User not found." });
-  }
 
-  if (user.image) {
-    return res
-      .status(400)
-      .json({ error: "Image already exists for this user." });
-  }
-
-  user.image = req.file.path;
-  await user.save();
-  return res
-    .status(201)
-    .json({ message: "Image uploaded successfully.", filePath: req.file.path });
-});
-
-const swaggerJsdoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
-
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Assignment 8 API",
-      version: "1.0.0",
-      description: "API documentation for Assignment 8",
-    },
-  },
-  apis: ["./main.js"],
-};
-
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use("/swag", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
-app.listen(8000, () => {});
+app.listen(process.env.PORT, () => {});
