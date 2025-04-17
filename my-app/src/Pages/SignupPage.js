@@ -127,6 +127,14 @@ const SignupPage = () => {
   return (
     <div className="signup-page-container">
       <div className="signup-content-wrapper">
+          <div className="signup-image-section">
+          <div className="image-overlay">
+            <div className="welcome-text">
+              <h1>Welcome to Jewelry Shop</h1>
+              <p>Join our community and discover exquisite jewelry pieces</p>
+            </div>
+          </div>
+        </div>
         <div className="signup-form-section">
           <div className="form-container">
             <h2>Create Account</h2>
