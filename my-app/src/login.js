@@ -11,26 +11,7 @@ const LoginPage = () => {
 
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		try {
-			const response = await axios.post(
-				"http://localhost:8000/login",
-				{ name, password },
-				{ withCredentials: true }
-			);
-			localStorage.setItem("token", response.data.token);
-			console.log("用户类型:", response.data.user.type);
-			console.log("用户类型1:", response.data.token);
-			if (response.data.user.type === "admin") {
-				navigate("/Homeadmin");
-			} else {
-				navigate("/");
-			}
-		} catch (err) {
-			setError("wrong password");
-		}
-	};
+
 
 	const togglePassword = () => {
 		setShowPassword(!showPassword);

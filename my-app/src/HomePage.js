@@ -291,10 +291,7 @@ function HomePage() {
 												alignItems: "center",
 											}}
 										>
-											<Typography
-												variant="subtitle1"
-												sx={{ marginRight: 2 }}
-											>
+											
 
 												<Typography
 													variant="subtitle1"
@@ -308,16 +305,17 @@ function HomePage() {
 											</Box>
 											
 											
+											
 										) : (
 											<Button onClick={goToLogin}>
 												Login Page
 											</Button>
 										)}
+										
 									</li>
 								</ul>
 							</div>
 
-						</div>
 					</nav>
 					{/* Header*/}
 					{/* <header class="bg-dark py-5">
