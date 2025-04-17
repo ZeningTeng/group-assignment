@@ -160,12 +160,13 @@ const LoginPage = () => {
                       Forgot Password?
                     </a>
                     <a
-                      href="#"
+                      onClick={() => navigate('/signup')}
                       className="text-link"
                       style={{
                         fontSize: "14px",
                         color: "#007bff",
                         textDecoration: "none",
+                        cursor: "pointer",
                       }}
                     >
                       Sign Up
