@@ -166,6 +166,19 @@ function HomePage() {
 					<nav className="navbar navbar-expand-lg navbar-light bg-light">
 						<nav aria-label="breadcrumb"></nav>
 						<div className="container px-4 px-lg-1">
+							<div className="d-flex justify-content-end ">
+								<Link to={"/"}>
+									<img
+										src="/assets/img/home.png"
+										alt="home"
+										style={{
+											width: "50px",
+											height: "50px",
+										}}
+										className="img-fluid rounded hover-shadow"
+									/>
+								</Link>
+							</div>
 							<a className="navbar-brand" href="/">
 								Jewelry Shop
 							</a>
@@ -200,14 +213,14 @@ function HomePage() {
 										</a>
 									</li>
 									<li className="nav-item">
-										<a
+										{/* <a
 											className="nav-link"
 											data-bs-toggle="offcanvas"
 											data-bs-target="#offcanvasExample"
 											aria-controls="offcanvasExample"
 										>
 											more about us
-										</a>
+										</a> */}
 									</li>
 									<li className="nav-item dropdown">
 										<a
@@ -232,7 +245,7 @@ function HomePage() {
 													All Products
 												</a>
 											</li>
-										
+
 											<li>
 												<hr className="dropdown-divider" />
 											</li>
@@ -255,9 +268,14 @@ function HomePage() {
 										</ul>
 									</li>
 									<li className="nav-item">
-											{userInfo && userInfo.type === "admin" ? (
-  									<Button onClick={handleControlPanel}>Control Panel</Button>) : null}
-
+										{userInfo &&
+										userInfo.type === "admin" ? (
+											<Button
+												onClick={handleControlPanel}
+											>
+												Control Panel
+											</Button>
+										) : null}
 									</li>
 								</ul>
 								<SearchBar />
@@ -291,31 +309,35 @@ function HomePage() {
 												alignItems: "center",
 											}}
 										>
-											
-
-												<Typography
-													variant="subtitle1"
-													sx={{ marginRight: 2 }}
-												>
-													{userInfo.name}
-												</Typography>
-												<Button onClick={handleSignOut}>
-												 signout
-												</Button>
-											</Box>
-											
-											
-											
-										) : (
-											<Button onClick={goToLogin}>
-												Login Page
+											<Typography
+												variant="subtitle1"
+												sx={{ marginRight: 2 }}
+											>
+												{userInfo.name}
+											</Typography>
+											<Button onClick={handleSignOut}>
+												signout
 											</Button>
-										)}
-										
-									</li>
-								</ul>
-							</div>
-
+										</Box>
+									) : (
+										<Button onClick={goToLogin}>
+											Login
+										</Button>
+									)}
+								</li>
+							</ul>
+							<button
+								className="border-0 bg-transparent p-0"
+								onClick={() => navigate("/order-history")}
+							>
+								<img
+									src="/assets/img/orders.jpg"
+									alt="Order History"
+									className="img-fluid rounded hover-shadow"
+									style={{ width: "40px", height: "40px" }}
+								/>
+							</button>
+						</div>
 					</nav>
 					{/* Header*/}
 					{/* <header class="bg-dark py-5">
