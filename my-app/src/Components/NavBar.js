@@ -1,52 +1,33 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import SearchBar from "./SearchBar";
-import { AppBar, Toolbar, Button, Typography, Box } from "@mui/material";
+import { Button, Typography, Box } from "@mui/material";
 
 function NavBar() {
   const handleSignOut = () => {
     localStorage.removeItem("token");
     setToken(null);
     setUserInfo(null);
-    handleMenuClose();
     navigate("/");
     alert("You have logged out successfully. Thank you for Shopping With us !");
   };
   const [token, setToken] = useState(null);
-
   const [userInfo, setUserInfo] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [logout, setlogout] = useState(null);
-  const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_EXPRESS_API_URL;
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+    const storedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
+
     if (storedToken) {
       setToken(storedToken);
-
-      axios
-        .get(apiUrl + "/profile", {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-          },
-        })
-        .then((res) => {
-          console.log(res.data.user);
-          setUserInfo(res.data.user);
-        })
-        .catch((err) => {
-          console.error("failed", err);
-        });
+    }
+    if (storedUserInfo) {
+      setUserInfo(storedUserInfo);
     }
   }, []);
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
   const goToLogin = () => {
     navigate("/login");
@@ -73,11 +54,6 @@ function NavBar() {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#!">
-                  Home
-                </a>
-              </li>
-              <li className="nav-item">
                 <a className="nav-link" href="#accordionExample">
                   About
                 </a>
@@ -89,7 +65,7 @@ function NavBar() {
                   data-bs-target="#offcanvasExample"
                   aria-controls="offcanvasExample"
                 >
-                  more about us
+                  More about us
                 </a>
               </li>
               <li className="nav-item dropdown">
@@ -111,11 +87,6 @@ function NavBar() {
                   </li>
                   <li>
                     <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#!">
-                      Popular Items
-                    </a>
                   </li>
                   <li>
                     <a className="dropdown-item" href="#!">
