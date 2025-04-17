@@ -27,6 +27,7 @@
     "react-router-dom": "^7.4.1",
     "react-scripts": "^5.0.1",
     "redux-persist": "^6.0.0",
+    "stripe": "^18.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "web-vitals": "^2.1.4"
