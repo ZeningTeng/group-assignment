@@ -15,13 +15,13 @@ import React, { useState, useContext, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../GlobalProvider";
 import { orders } from "../model/orderHistory";
-import ExpandableCard from "./ExpandableCard";
+import ExpandableCard from "./ExpandableCard.js";
 
 export default function OrderHistory() {
 	const {
-		addedItemsInCart,
+		// addedItemsInCart,
 		// setAddedItemsInCart,
-		cartTotalPrice,
+		// cartTotalPrice,
 		setCartTotalPrice,
 	} = useContext(AppContext);
 	const navigate = useNavigate();
@@ -43,18 +43,17 @@ export default function OrderHistory() {
 											tag="h5"
 											className="text-primary"
 										>
-											{/* <Link to="/"> */}
-											{/* <MDBIcon
-													fas
-													icon="angle-left"
-												/>{" "} */}
-											<MDBIcon
-												fas
-												icon="shopping-cart"
-												className="text-primary"
+											<MDBCardImage
+												src="/assets/img/orders.jpg"
+												fluid
+												className="rounded-3 me-3"
+												style={{
+													width: "40px",
+													height: "40px",
+												}}
+												alt="orders"
 											/>
 											Order History
-											{/* </Link> */}
 										</MDBTypography>
 										<hr />
 										<div className="d-flex justify-content-between align-items-center mb-4">
@@ -67,26 +66,9 @@ export default function OrderHistory() {
 													orders in the past
 												</p>
 											</div>
-											<div>
-												<p>
-													<span className="">
-														{`Sort by: `}
-													</span>
-													<a
-														href="#!"
-														className="text-body"
-													>
-														price
-														<MDBIcon
-															fas
-															icon="angle-down mt-1"
-														/>
-													</a>
-												</p>
-											</div>
 										</div>
-										{/* order history */}
 
+										{/* order history */}
 										{orders.map((order) => (
 											<ExpandableCard
 												key={order.orderId}
@@ -99,7 +81,21 @@ export default function OrderHistory() {
 											/>
 										))}
 									</MDBCol>
+
 									<MDBCol size="12" md="5">
+										<div className="d-flex justify-content-end ">
+											<Link to={"/"}>
+												<img
+													src="/assets/img/home.png"
+													alt="home"
+													style={{
+														width: "50px",
+														height: "50px",
+													}}
+													className="img-fluid rounded hover-shadow"
+												/>
+											</Link>
+										</div>
 										<div
 											// src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp"
 											src="/assets/img/priceTag.png"

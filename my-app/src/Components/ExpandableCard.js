@@ -46,12 +46,18 @@ export default function ExpandableCard({
 										}}
 									>
 										<hr />
-										<p className="small mb-0">
-											- Shipping Address: 123 Main St
-										</p>
-										<p className="small mb-0">
-											- Payment Method: Visa
-										</p>
+										{order.productLists.map((product) => (
+											<div key={product.productId}>
+												<p className="small mb-0">
+													- Product name:{" "}
+													{product.productName}
+												</p>
+												<p className="small mb-0">
+													{`# Count: ${product.count}`}
+												</p>
+											</div>
+										))}
+
 										{/* Add more detail fields as needed */}
 									</motion.div>
 								)}
@@ -68,6 +74,7 @@ export default function ExpandableCard({
 								}
 							>
 								{isExpanded ? "Collapse" : "Expand"}
+								<MDBIcon fas icon="angle-down mt-1 ms-1" />
 							</MDBBtn>
 						</div>
 					</div>
@@ -76,16 +83,10 @@ export default function ExpandableCard({
 						<MDBBtn
 							size="sm"
 							color="info"
-							onClick={() => navigate("/checkout")}
+							// onClick={() => }
 						>
 							Refund
 						</MDBBtn>
-						<a
-							href="#!"
-							style={{ color: "#cecece", marginLeft: "10px" }}
-						>
-							<MDBIcon fas icon="trash-alt" />
-						</a>
 					</div>
 				</div>
 			</MDBCardBody>

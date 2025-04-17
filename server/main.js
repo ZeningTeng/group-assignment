@@ -18,6 +18,7 @@ app.use(
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/images", express.static("images")); // make Express server expose the images folder
 
 app.use("/assets", express.static(path.join(__dirname, "../assets")));
 mongoose.connect(
@@ -40,12 +41,33 @@ const productSchema = new mongoose.Schema({
 	image: { type: String },
 });
 
+const productListSchema = new mongoose.Schema({
+	productId: { type: String, required: true },
+	count: { type: String, required: true },
+	productName: { type: String, required: true },
+});
+
+const ordersSchema = new mongoose.Schema({
+	orderId: { type: String, required: true },
+	productLists: [productListSchema],
+	userEmail: { type: String, required: true },
+	date: { type: String, required: true }, // or Date if you parse the date properly
+	expense: { type: Number, required: true },
+	refundable: { type: Boolean, default: false },
+});
+
 const User = mongoose.model("User", userSchema);
 const Products = mongoose.model("Product", productSchema);
+const Orders = mongoose.model("Orders", ordersSchema);
+
 let emailRegex = /^[a-zA-Z0-9]+@northeastern\.edu$/;
 let namePattern = /^[a-zA-Z]+ [a-zA-Z]+$/;
 
 let passPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
+
+// payment gateway api (stripe)
+const checkoutRoutes = require("./routes/checkout");
+app.use("/api", checkoutRoutes);
 
 /**
  * @swagger
@@ -92,6 +114,8 @@ app.post("/createUser", async (req, res) => {
 	return res.status(201).json({ message: "User created successfully." });
 });
 
+// get all
+
 /**
  * @swagger
  * /user/edit:
@@ -125,106 +149,178 @@ app.post("/createUser", async (req, res) => {
  *
  */
 
-app.get('/searchU', async (req, res) => {
-  const { name } = req.query; 
-   
-  const user = await User.findOne({ name:name});
-  return res.status(200).json({ user });
-  
+app.get("/searchU", async (req, res) => {
+	const { name } = req.query;
+
+	const user = await User.findOne({ name: name });
+	return res.status(200).json({ user });
 });
-app.get('/searchP', async (req, res) => {
-  const { name } = req.query; 
-     console.log("jdioa");
-  const product = await Products.findOne({ name:name});
-  return res.status(200).json({ product });
-  
+app.get("/searchP", async (req, res) => {
+	const { name } = req.query;
+	console.log("jdioa");
+	const product = await Products.findOne({ name: name });
+	return res.status(200).json({ product });
 });
-    app.put('/user/edit', async (req, res) => {
-       
-          const { name } = req.body;
-       
-          const user = await User.findOne({ email });
-          if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
-          }
-         
-          
-            if (!namePattern.test(name)) {
-              return res.status(400).json({ error: 'Validation failed.' });
-            }
-            user.name = name;
-          
-        
-         
-            if (!passPattern.test(password)) {
-              return res.status(400).json({ error: 'Validation failed.' });
-            }
-            user.password = await bcrypt.hash(password, 10);
-          
-          await user.save();
-          return res.status(200).json({ message: 'User updated successfully.' });
-        
-      });
-      const authenticateToken = (req, res, next) => {
- 
-        const authHeader = req.headers.authorization;
-        const token = authHeader && authHeader.split(' ')[1];
-      
-        if (!token) {
-          return res.sendStatus(401); 
-        }
-      
-        jwt.verify(token, 'auth', (err, decoded) => {
-          if (err) {
-            return res.sendStatus(403); 
-          }
-       
-          req.userId = decoded.id;
-          next();
-        });
-      };
-      
-      app.get('/profile', authenticateToken, async (req, res) => {
-       
-      
-          const user = await User.findById(req.userId);
-          if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-          }
-       
-          res.status(200).json({
-            user});
-        
-      });
-   app.post('/Login', async (req, res) => {
-     const { name, password } = req.body;
-   
-       
-       const user = await User.findOne({ name });
-       if (!user) {
-         return res.status(404).json({ error: "User not found" });
-       }
-      
-       const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return res.status(401).json({ error: 'invalid password' });
-  }
-        
-   
-       const token = jwt.sign(
-         { id: user._id, name: user.name },
-         'auth',
-         { expiresIn: '1h' }
-       );
-       return res.status(200).json({ token,  user: {
-         id: user._id,
-         name: user.name,
-         type: user.type
-       } });
-     
-   });
-   
-    /**
+
+// get all orders based on user email
+app.get("/orders", async (req, res) => {
+	const { email } = req.body;
+	console.warn("get orders");
+	const orders = await Orders.find({ userEmail: email });
+	return res.status(200).json(orders);
+});
+
+/* api upload image - begin */
+// Use multer storage to store image in specified folder
+const imgStorage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, "./images"); // folder for saving images (cb: callback, null: indicate no error)
+	},
+	filename: (req, file, cb) => {
+		// Create a unique filename with a timestamp
+		cb(null, file.originalname);
+	},
+});
+
+// File filter to accept only JPEG, PNG, and GIF formats
+const imgFilter = (req, file, cb) => {
+	const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+	if (allowedTypes.includes(file.mimetype)) {
+		cb(null, true); // indicate no error and accepted
+	} else {
+		cb(
+			new Error(
+				"Invalid file format. Only JPEG, PNG, and GIF are allowed."
+			),
+			false
+		);
+	}
+};
+
+// const uploadImg = multer({ imgStorage, imgFilter });
+const uploadImg = multer({
+	storage: imgStorage, // ✅ correct key is 'storage'
+	fileFilter: imgFilter, // ✅ correct key is 'fileFilter'
+});
+
+// Endpoint: POST /user/uploadImage
+app.post("/uploadImage", (req, res) => {
+	console.log("receiving uploadImage");
+
+	// Use multer to process a single file with the field name "image"
+	uploadImg.single("image")(req, res, async (err) => {
+		// err: capture any error from the file upload process (e.g., file validation errors).
+		if (err) {
+			// If file validation fails, respond with error (400)
+			return res.status(400).json({ error: err.message });
+		}
+
+		// const { email } = req.body;
+
+		// Check if the file was uploaded (should be file format, not plain text)
+		if (!req.file) {
+			return res.status(400).json({
+				error: "Image file is required. It should be file format.",
+			});
+		}
+		console.log("Saved image to:", req.file.path);
+
+		try {
+			// Find the user by email
+			// const user = await Sample.findOne({ email });
+
+			// Save the file path in the user's record
+			// user.image = req.file.path; // req.file.path: Multer adds a file object containing file path to the request.
+			// await user.save();
+
+			res.status(201).json({
+				message: "Image uploaded successfully.",
+				filePath: req.file.path,
+			});
+		} catch (error) {
+			console.error("Error uploading image:", error);
+			res.status(500).json({ error: "Internal server error." });
+		}
+	});
+});
+/* api upload image - end */
+
+// app.put("/user/edit", async (req, res) => {
+// 	const { name } = req.body;
+
+// 	const user = await User.findOne({ email });
+// 	if (!user) {
+// 		return res.status(404).json({ error: "User not found." });
+// 	}
+
+// 	if (!namePattern.test(name)) {
+// 		return res.status(400).json({ error: "Validation failed." });
+// 	}
+// 	user.name = name;
+
+// 	if (!passPattern.test(password)) {
+// 		return res.status(400).json({ error: "Validation failed." });
+// 	}
+// 	user.password = await bcrypt.hash(password, 10);
+
+// 	await user.save();
+// 	return res.status(200).json({ message: "User updated successfully." });
+// });
+const authenticateToken = (req, res, next) => {
+	const authHeader = req.headers.authorization;
+	const token = authHeader && authHeader.split(" ")[1];
+
+	if (!token) {
+		return res.sendStatus(401);
+	}
+
+	jwt.verify(token, "auth", (err, decoded) => {
+		if (err) {
+			return res.sendStatus(403);
+		}
+
+		req.userId = decoded.id;
+		next();
+	});
+};
+
+app.get("/profile", authenticateToken, async (req, res) => {
+	const user = await User.findById(req.userId);
+	if (!user) {
+		return res.status(404).json({ error: "User not found" });
+	}
+
+	res.status(200).json({
+		user,
+	});
+});
+app.post("/Login", async (req, res) => {
+	const { name, password } = req.body;
+
+	const user = await User.findOne({ name });
+	if (!user) {
+		return res.status(404).json({ error: "User not found" });
+	}
+
+	const isMatch = await bcrypt.compare(password, user.password);
+	if (!isMatch) {
+		return res.status(401).json({ error: "invalid password" });
+	}
+
+	const token = jwt.sign({ id: user._id, name: user.name }, "auth", {
+		expiresIn: "1h",
+	});
+	return res.status(200).json({
+		token,
+		user: {
+			id: user._id,
+			name: user.name,
+			type: user.type,
+		},
+	});
+});
+
+/**
 
 app.put("/user/edit", async (req, res) => {
 	const { email, name, password } = req.body;
@@ -320,25 +416,21 @@ app.post("/Login", async (req, res) => {
  *         description: notfound
  */
 
-app.delete('/deleteU', async (req, res) => {
-   
-      const { name } = req.body;
-      const user = await User.findOneAndDelete({ name:name });
-      if (!user) {
-        return res.status(404).json({ error: 'User not found.' });
-      }
-      return res.status(200).json({ message: 'User deleted successfully.' });
-    
-  });
-  app.delete('/deleteP', async (req, res) => {
-   
-    const { name } = req.body;
-    const user = await Products.findOneAndDelete({ name:name });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found.' });
-    }
-    return res.status(200).json({ message: 'User deleted successfully.' });
-  
+app.delete("/deleteU", async (req, res) => {
+	const { name } = req.body;
+	const user = await User.findOneAndDelete({ name: name });
+	if (!user) {
+		return res.status(404).json({ error: "User not found." });
+	}
+	return res.status(200).json({ message: "User deleted successfully." });
+});
+app.delete("/deleteP", async (req, res) => {
+	const { name } = req.body;
+	const user = await Products.findOneAndDelete({ name: name });
+	if (!user) {
+		return res.status(404).json({ error: "User not found." });
+	}
+	return res.status(200).json({ message: "User deleted successfully." });
 });
 
 /**
@@ -367,10 +459,10 @@ app.delete('/deleteU', async (req, res) => {
  *
  *
  */
-app.get("/user/getAll", async (req, res) => {
-	const users = await Product.find({}, { name: 1, email: 1, passoword: 1 });
-	return res.status(200).json({ users });
-});
+// app.get("/user/getAll", async (req, res) => {
+// 	const users = await Product.find({}, { name: 1, email: 1, passoword: 1 });
+// 	return res.status(200).json({ users });
+// });
 const storage = multer.diskStorage({
 	destination: (req, file, call) => {
 		call(null, "image/");
@@ -477,4 +569,5 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use("/swag", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-app.listen(8000, () => {});
+const PORT = 8000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

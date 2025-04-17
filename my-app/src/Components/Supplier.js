@@ -14,7 +14,6 @@ import React, { useState, useContext } from "react";
 // import "./ShoppingCart.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../GlobalProvider";
-import { loadStripe } from "@stripe/stripe-js";
 
 export default function Checkout() {
 	const navigate = useNavigate();
@@ -101,27 +100,6 @@ export default function Checkout() {
 			navigate("/order-history");
 		}
 		console.warn(form);
-		handleCheckout();
-	};
-
-	const stripePromise = loadStripe(
-		process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
-	); //publishable_key
-	const handleCheckout = async () => {
-		const res = await fetch("/api/create-checkout-session", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				items: [
-					{ name: "T-shirt", price: 2000, quantity: 1 },
-					{ name: "Shoes", price: 4000, quantity: 2 },
-				],
-			}),
-		});
-
-		const { id } = await res.json();
-		const stripe = await stripePromise;
-		stripe.redirectToCheckout({ sessionId: id });
 	};
 
 	return (
@@ -295,7 +273,6 @@ export default function Checkout() {
 												block
 												size="lg"
 												type="submit"
-												// onClick={handleCheckout}
 											>
 												<div className="d-flex justify-content-center">
 													<span>
