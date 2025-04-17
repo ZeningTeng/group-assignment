@@ -16,7 +16,7 @@ import Search from "./Search";
 import axios from "axios";
 import second from "./";
 import { AppContext } from "./GlobalProvider";
-import { products } from "./model/products";
+// import { products } from "./model/products";
 function SearchBar() {
 	const [name, setName] = useState("");
 
@@ -63,8 +63,14 @@ function HomePage() {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 	const navigate = useNavigate();
-	const { cartCount, setCartCount, addedItemsInCart, setAddedItemsInCart } =
-		useContext(AppContext);
+	const {
+		cartCount,
+		setCartCount,
+		addedItemsInCart,
+		setAddedItemsInCart,
+		allProducts,
+		setAllProducts,
+	} = useContext(AppContext);
 	const [openSnackBar, setOpenSnackBar] = useState(false);
 
 	useEffect(() => {
@@ -86,6 +92,10 @@ function HomePage() {
 					console.error("failed", err);
 				});
 		}
+	}, []);
+
+	useEffect(() => {
+		getAllProducts();
 	}, []);
 
 	const handleAvatarClick = (event) => {
@@ -142,6 +152,17 @@ function HomePage() {
 			return;
 		}
 		setOpenSnackBar(false);
+	};
+
+	const getAllProducts = async () => {
+		try {
+			const response = await axios.get("http://localhost:8000/products");
+			const products = response.data.products;
+			// console.log("products", products);
+			setAllProducts(products); // update local state
+		} catch (error) {
+			console.error("Get failed:", error);
+		}
 	};
 
 	return (
@@ -503,9 +524,9 @@ function HomePage() {
 					<section className="py-5">
 						<div className="container px-4 px-lg-5 mt-5">
 							<div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-								{/* first product */}
-								{products.map((product) => (
-									<div className="col mb-5" key={product.id}>
+								{/* product information */}
+								{allProducts.map((product) => (
+									<div className="col mb-5" key={product._id}>
 										<div className="card h-100">
 											{/* Sale badge*/}
 											{product.discountedPrice && (
@@ -520,20 +541,55 @@ function HomePage() {
 												</div>
 											)}
 											{/* Product image*/}
-											<img
-												className="card-img-top"
-												// src="http://localhost:8000/images/imagetest2.png"
-												src={product.imagePath}
-												alt={product.name}
-											/>
-											{/* Product details*/}
+
+											<div className="flip-card">
+												<div className="flip-card-inner">
+													<div className="flip-card-front">
+														<img
+															className="card-img-top fixed-img-size"
+															src={
+																product.imagePath
+															}
+															alt={product.name}
+														/>
+													</div>
+													<div
+														className="flip-card-back d-flex flex-column align-items-center justify-content-center"
+														style={{
+															backgroundColor:
+																"gold",
+															whiteSpace:
+																"normal",
+															wordWrap:
+																"break-word",
+															padding: "10px",
+														}}
+													>
+														<h6 className="text-black px-2">
+															Weight:{" "}
+															{product.weight}
+														</h6>
+														<h6 className="text-black px-2">
+															Material:{" "}
+															{product.material}
+														</h6>
+														<h6 className="text-black px-2">
+															Description:{" "}
+															{
+																product.description
+															}
+														</h6>
+													</div>
+												</div>
+											</div>
+											{/* Product details */}
 											<div className="card-body p-4">
 												<div className="text-center">
-													{/* Product name*/}
+													{/* Product name */}
 													<h5 className="fw-bolder">
 														{product.name}
 													</h5>
-													{/* Product reviews*/}
+													{/* Product stars/reviews */}
 													<div className="d-flex justify-content-center small text-warning mb-2">
 														{[
 															...Array(
@@ -557,7 +613,7 @@ function HomePage() {
 															/>
 														))}
 													</div>
-													{/* Product price*/}
+													{/* Product price */}
 													<span
 														className={
 															product.discountedPrice &&
@@ -596,7 +652,7 @@ function HomePage() {
 										</div>
 									</div>
 								))}
-
+								{/* pop up message: success */}
 								<Snackbar
 									open={openSnackBar}
 									anchorOrigin={{

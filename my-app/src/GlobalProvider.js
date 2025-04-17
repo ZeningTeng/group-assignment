@@ -7,6 +7,8 @@ function GlobalProvider() {
 		sessionStorage.getItem("addedItemsInCart")
 	);
 
+	const [allProducts, setAllProducts] = useState([]);
+
 	const [cartCount, setCartCount] = useState(
 		cartItemsFromSession ? cartItemsFromSession.length : 0
 	);
@@ -33,6 +35,8 @@ function GlobalProvider() {
 				setCartCount,
 				addedItemsInCart,
 				setAddedItemsInCart,
+				allProducts,
+				setAllProducts,
 			}}
 		>
 			<App />

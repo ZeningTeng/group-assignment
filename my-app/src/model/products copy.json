@@ -1,0 +1,38 @@
+[
+	{
+	  "id": 1,
+	  "name": "Diamond Whale Tail",
+	  "sale": true,
+	  "originalPrice": 35.0,
+	  "discountedPrice": null,
+	  "imagePath": "./assets/img/products/1.png",
+	  "starsNum": 3,
+	  "weight": "40g",
+	  "material": "diamond, gold",
+	  "available": true
+	},
+	{
+	  "id": 2,
+	  "name": "Lovely Cat Face",
+	  "sale": true,
+	  "originalPrice": 20.0,
+	  "discountedPrice": 18.55,
+	  "imagePath": "./assets/img/products/2.png",
+	  "starsNum": 4,
+	  "weight": "30g",
+	  "material": "gold, white spray paint",
+	  "available": true
+	},
+	{
+	  "id": 3,
+	  "name": "Fortune Tiger Lord",
+	  "sale": true,
+	  "originalPrice": 50.25,
+	  "discountedPrice": 29.99,
+	  "imagePath": "./assets/img/products/3.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false
+	}
+  ]
