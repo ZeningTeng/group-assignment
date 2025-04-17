@@ -18,6 +18,8 @@ app.use(
   })
 );
 
+
+app.use(cors({origin: 'http://localhost:3000', credentials: true}))
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/assets", express.static(path.join(__dirname, "../assets")));
