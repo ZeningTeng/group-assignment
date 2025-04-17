@@ -1,0 +1,62 @@
+[
+	{
+	  "name": "Gold Bear",
+	  "sale": true,
+	  "originalPrice": 60.25,
+	  "discountedPrice": 39.99,
+	  "imagePath": "./assets/img/products/4.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "A majestic golden bear charm symbolizing strength and prosperity."
+	},
+	{
+	  "name": "Little cute pig",
+	  "sale": true,
+	  "originalPrice": 35.25,
+	  "discountedPrice": 5.99,
+	  "imagePath": "./assets/img/products/5.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "This adorable pig figure brings joy and wealth to any collection."
+	},
+	{
+	  "name": "Little cute fox",
+	  "sale": true,
+	  "originalPrice": 25.25,
+	  "discountedPrice": 10.99,
+	  "imagePath": "./assets/img/products/6.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "A playful fox design that captures cleverness and charm in gold."
+	},
+	{
+	  "name": "Fortune old man",
+	  "sale": false,
+	  "originalPrice": 30,
+	  "discountedPrice": 20.99,
+	  "imagePath": "./assets/img/products/7.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "Inspired by traditional fortune gods, bringing luck and blessings."
+	},
+	{
+	  "name": "Little cute long dog",
+	  "sale": true,
+	  "originalPrice": 60.25,
+	  "discountedPrice": 29.99,
+	  "imagePath": "./assets/img/products/8.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "A cute dachshund design that's full of loyalty and personality."
+	}
+  ]
