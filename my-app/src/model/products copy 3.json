@@ -1,0 +1,62 @@
+[
+	{
+	  "name": "Cute sleepy Fox",
+	  "sale": false,
+	  "originalPrice": 60.25,
+	  "discountedPrice": 39.99,
+	  "imagePath": "./assets/img/products/9.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "A sleepy little fox curled up in gold, bringing peace and tranquility to your collection."
+	},
+	{
+	  "name": "Fox on the moon",
+	  "sale": true,
+	  "originalPrice": 30.25,
+	  "discountedPrice": 5.99,
+	  "imagePath": "./assets/img/products/10.png",
+	  "starsNum": 3,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "A dreamy fox resting on a golden crescent moon, symbolizing calmness and wonder."
+	},
+	{
+	  "name": "Little cute elephant",
+	  "sale": true,
+	  "originalPrice": 20.25,
+	  "discountedPrice": 10.99,
+	  "imagePath": "./assets/img/products/11.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "An adorable elephant figure representing wisdom, strength, and good fortune."
+	},
+	{
+	  "name": "Fortune cat & fish",
+	  "sale": false,
+	  "originalPrice": 35,
+	  "discountedPrice": 20.99,
+	  "imagePath": "./assets/img/products/12.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "A traditional lucky cat paired with a koi fish, symbolizing abundance and prosperity."
+	},
+	{
+	  "name": "Little fortune bear",
+	  "sale": true,
+	  "originalPrice": 80.25,
+	  "discountedPrice": 29.99,
+	  "imagePath": "./assets/img/products/13.png",
+	  "starsNum": 5,
+	  "weight": "60g",
+	  "material": "gold, black spray paint",
+	  "available": false,
+	  "description": "This charming bear brings warmth and fortune, a perfect gift for good luck and success."
+	}
+  ]
