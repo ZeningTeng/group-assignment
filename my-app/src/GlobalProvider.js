@@ -13,11 +13,18 @@ function GlobalProvider() {
 	const [addedItemsInCart, setAddedItemsInCart] = useState(
 		cartItemsFromSession || []
 	);
-	const [cartTotalPrice, setCartTotalPrice] = useState(0);
 
 	useEffect(() => {
 		console.log("cartCount initialized:", cartCount);
 	}, []);
+
+	useEffect(() => {
+		sessionStorage.setItem(
+			"addedItemsInCart",
+			JSON.stringify(addedItemsInCart)
+		);
+		setCartCount(addedItemsInCart.length);
+	}, [addedItemsInCart]);
 
 	return (
 		<AppContext.Provider
@@ -26,8 +33,6 @@ function GlobalProvider() {
 				setCartCount,
 				addedItemsInCart,
 				setAddedItemsInCart,
-				cartTotalPrice,
-				setCartTotalPrice,
 			}}
 		>
 			<App />

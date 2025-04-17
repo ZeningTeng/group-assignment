@@ -1,6 +1,15 @@
 @media (min-width: 1025px) {
 	.h-custom {
-	height: 100vh !important;
+		height: 100vh !important;
 	}
 }
 
+/* Example: below “md” (mobile & small tablets) */
+@media (max-width: 767.98px) {
+	/* Stack the two columns vertically */
+	.stacked-layout-custom {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+}
