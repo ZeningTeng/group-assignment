@@ -1,6 +1,7 @@
 export const orders = [
 	{
 		orderId: 1,
+		userEmail: "lin.weih@northeastern.edu",
 		productLists: [
 			{ productId: 1, count: 2, productName: "Diamond Whale Tail" },
 			{ productId: 2, count: 1, productName: "Lovely Cat Face" },
@@ -11,6 +12,7 @@ export const orders = [
 	},
 	{
 		orderId: 2,
+		userEmail: "lin.weih@northeastern.edu",
 		productLists: [
 			{ productId: 1, count: 2, productName: "Diamond Whale Tail" },
 			{ productId: 3, count: 2, productName: "Fortune Tiger Lord" },
@@ -21,6 +23,7 @@ export const orders = [
 	},
 	{
 		orderId: 3,
+		userEmail: "lin.weih@northeastern.edu2",
 		productLists: [
 			{ productId: 3, count: 2, productName: "Fortune Tiger Lord" },
 			{ productId: 1, count: 1, productName: "Diamond Whale Tail" },

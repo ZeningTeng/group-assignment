@@ -160,7 +160,10 @@ function HomePage() {
 						rel="stylesheet"
 					/>
 					{/* Core theme CSS (includes Bootstrap)*/}
-					<link href="css/styles.css" rel="stylesheet" />
+					{/* ✅ Do not use <link href="..."> when working with React + proxy on port 8000.
+    Instead, import the CSS file directly in your component or entry file like this:
+    import './styles.css'; */}
+					{/* <link href="css/styles.css" rel="stylesheet" />  */}
 
 					{/* Navigation*/}
 					<nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -519,6 +522,7 @@ function HomePage() {
 											{/* Product image*/}
 											<img
 												className="card-img-top"
+												// src="http://localhost:8000/images/imagetest2.png"
 												src={product.imagePath}
 												alt={product.name}
 											/>
