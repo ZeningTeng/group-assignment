@@ -37,6 +37,9 @@ const LoginPage = () => {
 	};
 
 	const buttonStyle = {
+		position: "fixed", // Use "fixed" for always visible
+		top: "22px", // Distance from top
+		left: "30px", // Distance from left
 		backgroundColor: "#007bff",
 		border: "none",
 		color: "white",
@@ -50,16 +53,6 @@ const LoginPage = () => {
 
 	return (
 		<div style={{ minHeight: "100vh", backgroundColor: "#fffdefd6" }}>
-			<div>
-				<button
-					type="button"
-					onClick={() => navigate("/")}
-					style={buttonStyle}
-				>
-					← Home
-				</button>
-			</div>
-
 			<div
 				style={{
 					backgroundImage: `url('/assets/img/loginpage/loginPageBg.png')`,
@@ -72,6 +65,15 @@ const LoginPage = () => {
 					padding: "20px",
 				}}
 			>
+				<div>
+					<button
+						type="button"
+						onClick={() => navigate("/")}
+						style={buttonStyle}
+					>
+						← Home
+					</button>
+				</div>
 				<div className="container">
 					<div className="row">
 						<div className="col-lg-6 col-md-6 col-12 mb-4">
