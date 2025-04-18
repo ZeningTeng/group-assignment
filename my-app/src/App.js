@@ -12,7 +12,6 @@ import Home from "./Pages/HomePage";
 
 import Result from "./Result";
 import Login from "./Pages/LoginPage";
-import ShoppingCart from "./Components/ShoppingCart";
 import SignupPage from "./Pages/SignupPage";
 import AdminPage from "./Pages/AdminPage";
 import SupplierPage from "./Pages/SupplierPage";
