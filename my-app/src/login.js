@@ -223,7 +223,7 @@ const LoginPage = () => {
 											Forgot Password?
 										</a>
 										<a
-											href="#"
+											href="/signup"
 											className="text-link"
 											style={{
 												fontSize: "14px",
