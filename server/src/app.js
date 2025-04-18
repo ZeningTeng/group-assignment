@@ -26,6 +26,6 @@ mongoose
 
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
-app.use("/checkout", checkoutRoutes);
+app.use("/api", checkoutRoutes);
 
 module.exports = app;
