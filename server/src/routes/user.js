@@ -118,6 +118,12 @@ router.delete(
       if (!existingUser) {
         return res.status(404).json({ error: "User not found" });
       }
+      if (existingUser.role === "supplier") {
+        const products = await Product.find({ suppliermail: email });
+        if (products.length > 0) {
+          await Product.deleteMany({ suppliermail: email });
+        }
+      }
 
       await existingUser.deleteOne();
 

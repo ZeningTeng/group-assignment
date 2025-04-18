@@ -25,8 +25,9 @@ const SignupPage = () => {
     // Name validation
     if (!formData.name.trim()) {
       newErrors.name = "Name is required";
-    } else if (!/^[a-zA-Z]+ [a-zA-Z]+$/.test(formData.name.trim())) {
-      newErrors.name = "Please enter both first and last name";
+    } else if (!/^[a-zA-Z]+(?: [a-zA-Z]+)?$/.test(formData.name.trim())) {
+      newErrors.name =
+        "Name should only contain letters, with at most one space between first and last names";
     }
 
     // Email validation
@@ -82,10 +83,10 @@ const SignupPage = () => {
 
     try {
       await axios.post(apiUrl + "/user/create", {
-        name: formData.name,
+        fullName: formData.name,
         email: formData.email,
         password: formData.password,
-        type: "user",
+        role: "customer",
       });
 
       setFormSuccess(true);
@@ -127,7 +128,7 @@ const SignupPage = () => {
   return (
     <div className="signup-page-container">
       <div className="signup-content-wrapper">
-          <div className="signup-image-section">
+        <div className="signup-image-section">
           <div className="image-overlay">
             <div className="welcome-text">
               <h1>Welcome to Jewelry Shop</h1>
