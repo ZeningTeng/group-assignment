@@ -502,6 +502,7 @@ app.post("/Login", async (req, res) => {
 			id: user._id,
 			name: user.name,
 			type: user.type,
+			email: user.email,
 		},
 	});
 });

@@ -38,6 +38,7 @@ const LoginPage = () => {
     try {
       const response = await axios.post('http://localhost:8000/login', { name, password },{withCredentials:true});
       localStorage.setItem('token', response.data.token);
+	  localStorage.setItem('userInfo', JSON.stringify(response.data.user));
     
         navigate('/');
       
