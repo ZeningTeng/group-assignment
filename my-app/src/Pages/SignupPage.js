@@ -12,6 +12,7 @@ const SignupPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -37,6 +38,10 @@ const SignupPage = () => {
       newErrors.email = "Please enter a valid email address";
     }
 
+    if (!formData.role) {
+      newErrors.role = "Please choose a role";
+    }
+    
     // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
@@ -185,6 +190,21 @@ const SignupPage = () => {
                   <span className="error-message">{errors.email}</span>
                 )}
               </div>
+                          <div className="form-group">
+              <label htmlFor="role">I am a…</label>
+              <select
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className={errors.role ? "error" : ""}
+              >
+                <option value="">— Select —</option>
+                <option value="customer">Customer</option>
+                <option value="supplier">Supplier</option>
+              </select>
+              {errors.role && <span className="error-message">{errors.role}</span>}
+            </div>
 
               <div className="form-group">
                 <label htmlFor="password">Password</label>
