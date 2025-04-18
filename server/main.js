@@ -1,3 +1,4 @@
+require('dotenv').config();  
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -34,11 +35,28 @@ const userSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
+	id: { type: String},
+	name: { type: String },
+
+	originalPrice: { type: String},
+	count: { type: String},
+	weight: { type: String},
+	material: { type: String },
+	description: { type: String },
+	imagePath: { type: String },
+	discountedPrice: { type: String },
+});
+const productSchema1 = new mongoose.Schema({
+	id: { type: String, required: true },
 	name: { type: String, required: true },
-	price: { type: String, required: true },
+
+	originalPrice: { type: String, required: true },
 	count: { type: String, required: true },
+	weight: { type: String, required: true },
+	material: { type: String, required: true },
 	description: { type: String, required: true },
-	image: { type: String },
+	imagePath: { type: String },
+	discountedPrice: { type: String, required: true },
 });
 
 const productListSchema = new mongoose.Schema({
@@ -98,7 +116,7 @@ app.use("/api", checkoutRoutes);
  *         description: Validation failed
  */
 
-app.post("/createUser", async (req, res) => {
+app.post("/createU", async (req, res) => {
 	const { name, email, password, type } = req.body;
 
 	const hashedPassword = await bcrypt.hash(password, 10);
@@ -108,6 +126,28 @@ app.post("/createUser", async (req, res) => {
 		email,
 		password: hashedPassword,
 		type,
+	});
+
+	await newUser.save();
+	return res.status(201).json({ message: "User created successfully." });
+});
+
+app.post("/createP", async (req, res) => {
+	const { id,name,originalPrice,count,weight,material, description,imagePath,discountedPrice } = req.body;
+
+	const newUser = new Products({
+		id,
+		name,
+		originalPrice,
+		count,
+		weight,
+		material,
+		description,
+		imagePath,
+		discountedPrice,
+
+
+		
 	});
 
 	await newUser.save();
@@ -148,7 +188,37 @@ app.post("/createUser", async (req, res) => {
  *         description: notfound
  *
  */
+app.put("/updateU", async (req, res) => {
+	const {  name} = req.body;
 
+	const user = await User.findOne({ name:name });
+	if (!user) {
+		return res.status(404).json({ error: "User not found." });
+	}
+
+	user.name = name;
+
+
+
+	await user.save();
+	return res.status(200).json({ message: " updated successfully." });
+});
+app.put("/updateP", async (req, res) => {
+	const {  name,originalPrice} = req.body;
+
+	const user = await Products.findOne({ name:name });
+	if (!user) {
+		return res.status(404).json({ error: "User not found." });
+	}
+
+	user.name = name;
+	user.originalPrice=originalPrice;
+
+
+
+	await user.save();
+	return res.status(200).json({ message: " updated successfully." });
+});
 app.get("/searchU", async (req, res) => {
 	const { name } = req.query;
 
