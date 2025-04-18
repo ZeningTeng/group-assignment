@@ -61,6 +61,19 @@ const LoginPage = () => {
           padding: "20px",
         }}
       >
+            <i
+          className="fas fa-home"
+          onClick={() => navigate("/")}
+          style={{
+            position: "fixed",
+            top: 20,
+            left: 20,
+            fontSize: "1.5rem",
+            color: "#333",
+            cursor: "pointer",
+            zIndex: 9999,
+          }}
+        />
         <div className="container">
           <div className="row">
             <div className="col-lg-6 col-md-6 col-12 mb-4">

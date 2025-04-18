@@ -102,6 +102,18 @@
     margin-bottom: 20px;
     border-left: 4px solid #e74c3c;
   }
+
+  select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    font-size: 1rem;
+  }
+  select.error {
+    border-color: #e74c3c;
+  }
+  
   
   .toggle-password {
     position: absolute;
