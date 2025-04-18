@@ -34,7 +34,7 @@ function NavBar() {
   };
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-light bg-dark">
         <nav aria-label="breadcrumb"></nav>
         <div className="container px-4 px-lg-1">
           <a className="navbar-brand" href="#!">

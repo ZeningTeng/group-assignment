@@ -26,8 +26,9 @@ const SignupPage = () => {
     // Name validation
     if (!formData.name.trim()) {
       newErrors.name = "Name is required";
-    } else if (!/^[a-zA-Z]+ [a-zA-Z]+$/.test(formData.name.trim())) {
-      newErrors.name = "Please enter both first and last name";
+    } else if (!/^[a-zA-Z]+(?: [a-zA-Z]+)?$/.test(formData.name.trim())) {
+      newErrors.name =
+        "Name should only contain letters, with at most one space between first and last names";
     }
 
     // Email validation
@@ -86,19 +87,30 @@ const SignupPage = () => {
     setIsSubmitting(true);
 
     try {
-          await axios.post("http://localhost:8000/user/create", {
-           name:     formData.name,
-             email:    formData.email,
-             password: formData.password,
-            type:     formData.role
-          });
-    
-          navigate("/login");
-          }catch (err) {
-                 setErrors(prev => ({
-                  ...prev,
-                  general: err.response?.data?.error || "Signup failed"
-                }));
+      await axios.post(apiUrl + "/user/create", {
+        fullName: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: "customer",
+      });
+
+      setFormSuccess(true);
+
+      // Redirecting to login after showing success message
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.error || "An error occurred during registration";
+
+      if (errorMessage.includes("email")) {
+        setErrors((prev) => ({ ...prev, email: errorMessage }));
+      } else if (errorMessage.includes("password")) {
+        setErrors((prev) => ({ ...prev, password: errorMessage }));
+      } else {
+        setErrors((prev) => ({ ...prev, general: errorMessage }));
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -121,7 +133,7 @@ const SignupPage = () => {
   return (
     <div className="signup-page-container">
       <div className="signup-content-wrapper">
-          <div className="signup-image-section">
+        <div className="signup-image-section">
           <div className="image-overlay">
             <div className="welcome-text">
               <h1>Welcome to Jewelry Shop</h1>

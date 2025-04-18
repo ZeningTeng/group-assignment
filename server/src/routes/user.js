@@ -16,7 +16,7 @@ router.post(
       minNumbers: 1,
       minSymbols: 1,
     }),
-    check("role").isIn(["admin", "customer"]),
+    check("role").isIn(["admin", "customer", "supplier"]),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -118,6 +118,12 @@ router.delete(
       if (!existingUser) {
         return res.status(404).json({ error: "User not found" });
       }
+      if (existingUser.role === "supplier") {
+        const products = await Product.find({ suppliermail: email });
+        if (products.length > 0) {
+          await Product.deleteMany({ suppliermail: email });
+        }
+      }
 
       await existingUser.deleteOne();
 
@@ -144,7 +150,6 @@ router.get("/getAll", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  
 
   try {
     const existingUser = await User.findOne({ email });
@@ -171,6 +176,7 @@ router.post("/login", async (req, res) => {
       token,
       role: existingUser.role,
       name: existingUser.fullName,
+      email: existingUser.email,
     });
   } catch (error) {
     console.error("Login error:", error);

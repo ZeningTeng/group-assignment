@@ -28,6 +28,8 @@ const LoginPage = () => {
         navigate("/adminDashBoard");
       } else if (response.data.role === "customer") {
         navigate("/");
+      } else if (response.data.role === "supplier") {
+        navigate("/supplierDashBoard");
       }
     } catch (err) {
       setError("wrong password");
@@ -182,7 +184,7 @@ const LoginPage = () => {
                       Forgot Password?
                     </a>
                     <a
-                      onClick={() => navigate('/signup')}
+                      onClick={() => navigate("/signup")}
                       className="text-link"
                       style={{
                         fontSize: "14px",

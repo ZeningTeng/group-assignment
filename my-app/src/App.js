@@ -8,23 +8,17 @@ import {
 } from "react-router-dom";
 import { useEffect } from "react";
 
-import 'bootstrap-icons/font/bootstrap-icons.css';
 import Home from "./Pages/HomePage";
 
 import Result from "./Result";
 import Login from "./Pages/LoginPage";
 import ShoppingCart from "./Components/ShoppingCart";
-import SignupPage from './Pages/SignupPage';
+import SignupPage from "./Pages/SignupPage";
 import AdminPage from "./Pages/AdminPage";
+import SupplierPage from "./Pages/SupplierPage";
+import Unauthorized from "./Pages/Unauthorized";
 
-
-function App() {
-  const token = localStorage.getItem("token");
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {}, [location, navigate]);
-
+function App() { 
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -32,7 +26,9 @@ function App() {
       <Route path="/Login" element={<Login />} />
       <Route path="/cart" element={<ShoppingCart />} />
       <Route path="/signup" element={<SignupPage />} />
-      <Route path="/adminDashBoard" element={<AdminPage/>} />
+      <Route path="/adminDashBoard" element={<AdminPage />} />
+      <Route path="/supplierDashBoard" element={<SupplierPage />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
     </Routes>
   );
 }

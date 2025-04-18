@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import AdminNavBar from "../Components/AdminNavBar";
-import AdminDashBoard from "../Components/AdminUser";
-import AdminProduct from "../Components/AdminProduct";
 import Footer from "../Components/Footer";
 import { Navigate } from "react-router-dom";
+import SupplierNavBar from "../Components/SupplierNavBar";
+import SupplierProduct from "../Components/SupplierProduct";
+import SupplierUser from "../Components/SupplierUser";
 
-function AdminPage() {
+function SupplierPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedPage, setSelectedPage] = useState("dashboard");
@@ -15,7 +15,7 @@ function AdminPage() {
     const user = JSON.parse(localStorage.getItem("userInfo"));
     const token = localStorage.getItem("token");
 
-    if (user && user.role === "admin" && token) {
+    if (user && user.role === "supplier" && token) {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
@@ -47,13 +47,12 @@ function AdminPage() {
 
   return (
     <div>
-      <AdminNavBar onPageChange={handlePageChange} />
-
-      {selectedPage === "dashboard" && <AdminDashBoard />}
-      {selectedPage === "products" && <AdminProduct />}
+      <SupplierNavBar onPageChange={handlePageChange} />
+      {selectedPage === "dashboard" && <SupplierUser/>}
+      {selectedPage === "products" && <SupplierProduct />}
       <Footer />
     </div>
   );
 }
 
-export default AdminPage;
+export default SupplierPage;

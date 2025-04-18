@@ -24,13 +24,12 @@ function ProductAdmin() {
   const [products, setProducts] = useState([]);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false); 
-  const [productToDelete, setProductToDelete] = useState(null); 
-  const [openSnackbar, setOpenSnackbar] = useState(false); 
-  const [snackbarMessage, setSnackbarMessage] = useState(""); 
+  const [openDialog, setOpenDialog] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const apiUrl = process.env.REACT_APP_EXPRESS_API_URL;
 
- 
   useEffect(() => {
     const fetchProducts = async () => {
       setStatus("loading");
@@ -47,32 +46,26 @@ function ProductAdmin() {
     fetchProducts();
   }, []);
 
-  
   const handleDeleteClick = (product) => {
-    setProductToDelete(product); 
-    setOpenDialog(true); 
+    setProductToDelete(product);
+    setOpenDialog(true);
   };
 
-  
   const handleDeleteConfirm = async () => {
     if (productToDelete) {
       try {
-        
         const payload = { id: productToDelete._id };
+        console.log(payload.id);
 
-       
-        await axios.delete(apiUrl + "/product/delete", { data: payload });
+        await axios.delete(apiUrl + "/product/delete/" + payload.id);
 
-        
         setProducts(
           products.filter((product) => product._id !== productToDelete._id)
         );
 
-        
         setSnackbarMessage("Product deleted successfully!");
         setOpenSnackbar(true);
 
-        
         setOpenDialog(false);
       } catch (error) {
         setError(error.response?.data?.message || "Failed to delete product");
@@ -80,12 +73,10 @@ function ProductAdmin() {
     }
   };
 
- 
   const handleDialogClose = () => {
     setOpenDialog(false);
     setProductToDelete(null);
   };
-
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
@@ -160,9 +151,7 @@ function ProductAdmin() {
                 <TableRow key={product._id}>
                   <TableCell align="center">{product.name || "N/A"}</TableCell>
                   <TableCell align="center">${product.price}</TableCell>
-                  <TableCell align="center">
-                    {product.type || "N/A"}
-                  </TableCell>
+                  <TableCell align="center">{product.type || "N/A"}</TableCell>
                   <TableCell align="center">
                     <Button
                       variant="contained"
@@ -179,7 +168,6 @@ function ProductAdmin() {
         </TableContainer>
       </div>
 
-     
       <Dialog open={openDialog} onClose={handleDialogClose}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
@@ -195,10 +183,9 @@ function ProductAdmin() {
         </DialogActions>
       </Dialog>
 
-      
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={6000} 
+        autoHideDuration={6000}
         onClose={handleSnackbarClose}
       >
         <Alert
