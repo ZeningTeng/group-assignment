@@ -1,4 +1,5 @@
-require('dotenv').config();  
+
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -18,12 +19,12 @@ app.use(
 );
 
 
-app.use(express.static(path.join(__dirname, '../my-app/build')));
+// app.use(express.static(path.join(__dirname, "../my-app/build")));
 
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
+// });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
-});
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/images", express.static("images")); // make Express server expose the images folder
@@ -44,7 +45,6 @@ const userSchema = new mongoose.Schema({
 const productSchema = new mongoose.Schema({
 	id: { type: String},
 	name: { type: String },
-
 	originalPrice: { type: String},
 	count: { type: String},
 	weight: { type: String},
@@ -68,16 +68,20 @@ const productSchema1 = new mongoose.Schema({
 
 const productListSchema = new mongoose.Schema({
 	productId: { type: String, required: true },
-	count: { type: String, required: true },
+	count: { type: Number, required: true },
 	productName: { type: String, required: true },
+	price: { type: Number, required: true },
 });
 
 const ordersSchema = new mongoose.Schema({
 	orderId: { type: String, required: true },
 	productLists: [productListSchema],
 	userEmail: { type: String, required: true },
-	date: { type: String, required: true }, // or Date if you parse the date properly
-	expense: { type: Number, required: true },
+	date: { type: String, required: true }, // e.g., "2025.05.06"
+	time: { type: String, required: true }, // e.g., "09:35 AM"
+	subtotal: { type: Number, required: true }, // total before shipping
+	shippingFee: { type: Number, required: true },
+	total: { type: Number, required: true }, // total = subtotal + shippingFee
 	refundable: { type: Boolean, default: false },
 });
 
@@ -140,7 +144,19 @@ app.post("/createU", async (req, res) => {
 });
 
 app.post("/createP", async (req, res) => {
-	const { id,name,originalPrice,count,weight,material, description,imagePath,discountedPrice } = req.body;
+
+	const {
+		id,
+		name,
+		originalPrice,
+		count,
+		weight,
+		material,
+		description,
+		imagePath,
+		discountedPrice,
+	} = req.body;
+
 
 	const newUser = new Products({
 		id,
@@ -152,9 +168,6 @@ app.post("/createP", async (req, res) => {
 		description,
 		imagePath,
 		discountedPrice,
-
-
-		
 	});
 
 	await newUser.save();
@@ -196,30 +209,32 @@ app.post("/createP", async (req, res) => {
  *
  */
 app.put("/updateU", async (req, res) => {
-	const {  name} = req.body;
 
-	const user = await User.findOne({ name:name });
+	const { name } = req.body;
+	const user = await User.findOne({ name: name });
+
 	if (!user) {
 		return res.status(404).json({ error: "User not found." });
 	}
 
 	user.name = name;
-
 
 
 	await user.save();
 	return res.status(200).json({ message: " updated successfully." });
 });
 app.put("/updateP", async (req, res) => {
-	const {  name,originalPrice} = req.body;
+	const { name, originalPrice } = req.body;
 
-	const user = await Products.findOne({ name:name });
+	const user = await Products.findOne({ name: name });
 	if (!user) {
 		return res.status(404).json({ error: "User not found." });
 	}
 
 	user.name = name;
-	user.originalPrice=originalPrice;
+	user.originalPrice = originalPrice;
+
+
 
 
 
@@ -266,6 +281,79 @@ app.get("/orders", async (req, res) => {
 	console.warn("get orders");
 	const orders = await Orders.find({ userEmail: email });
 	return res.status(200).json(orders);
+});
+
+// add a new order based on user email into order history
+app.post("/create/order", async (req, res) => {
+	try {
+		const {
+			productLists,
+			userEmail,
+			date,
+			time,
+			refundable,
+			shippingFee,
+			subtotal,
+			total,
+			orderId,
+		} = req.body;
+
+		// Basic validation
+		if (
+			!userEmail ||
+			!productLists ||
+			!Array.isArray(productLists) ||
+			productLists.length === 0 ||
+			!orderId
+		) {
+			return res.status(400).json({ error: "Invalid order data" });
+		}
+
+		const newOrder = new Orders({
+			productLists,
+			userEmail,
+			date,
+			time,
+			refundable,
+			shippingFee,
+			subtotal,
+			total,
+			orderId,
+		});
+
+		await newOrder.save();
+
+		return res.status(201).json({ message: "Order created successfully" });
+	} catch (error) {
+		console.error("❌ Error creating order:", error);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// update refundable in past order based on user email
+app.put("/update/refund", async (req, res) => {
+	try {
+		const { email, orderId, refundable } = req.body;
+
+		if (!email || !orderId || typeof refundable !== "boolean") {
+			return res.status(400).json({
+				error: "Email, orderId and valid refundable value are required",
+			});
+		}
+
+		const result = await Orders.updateOne(
+			{ userEmail: email, orderId: orderId }, // ✅ search by both
+			{ $set: { refundable: refundable } } // update value
+		);
+
+		return res.status(200).json({
+			message: `Refundable status updated to ${refundable}`,
+			modifiedCount: result.modifiedCount,
+		});
+	} catch (error) {
+		console.error("❌ Error updating refundable:", error);
+		return res.status(500).json({ error: "Internal server error" });
+	}
 });
 
 /* api upload image - begin */

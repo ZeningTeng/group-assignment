@@ -101,7 +101,9 @@ function HomePage() {
 				.then((res) => {
 					console.log(res.data.user);
 					setUserInfo(res.data.user);
-					setUserEmail(res.data.user.email);
+					let email = res.data.user.email;
+					setUserEmail(email);
+					sessionStorage.setItem("userEmail", email);
 				})
 				.catch((err) => {
 					console.error("failed", err);
@@ -122,11 +124,15 @@ function HomePage() {
 	};
 
 	const handleSignOut = () => {
+		sessionStorage.removeItem("userEmail");
+		sessionStorage.removeItem("addedItemsInCart");
+		sessionStorage.removeItem("currentOrder");
 		localStorage.removeItem("token");
 		setToken(null);
 		setUserInfo(null);
 		handleMenuClose();
 		navigate("/");
+		window.location.reload(); // Reload page
 	};
 	const handleProfile = () => {
 		handleMenuClose();

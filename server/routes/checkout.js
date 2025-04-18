@@ -6,7 +6,7 @@ const router = express.Router();
 const stripe = Stripe("sk_test_51REsvWQkw3LLv39uvPY37gUkOY690Hx2PjP9QifKse7VW7br5nmjYw4XmTOzZ22H5p9T4zVLAMEY3SgkPChlvhSh00HGrsfEDd"); //🔒 使用 .env 較安全 (secret_key)
 
 router.post("/create-checkout-session", async (req, res) => {
-	const { items } = req.body;
+	const { items, email } = req.body;
 
 	const line_items = items.map((item) => ({
 		price_data: {
@@ -23,6 +23,7 @@ router.post("/create-checkout-session", async (req, res) => {
 		payment_method_types: ["card"],
 		line_items,
 		mode: "payment",
+		customer_email: email, // ✅ this sets the email
 		success_url: "http://localhost:3000/success",
 		cancel_url: "http://localhost:3000/cancel",
 	});
