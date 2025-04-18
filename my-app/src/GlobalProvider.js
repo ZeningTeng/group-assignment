@@ -7,7 +7,9 @@ function GlobalProvider() {
 		sessionStorage.getItem("addedItemsInCart")
 	);
 
-	const [userEmail, setUserEmail] = useState(""); // set user eamil as user id
+	const [userEmail, setUserEmail] = useState(
+		sessionStorage.getItem("userEmail") || ""
+	); // set user eamil as user id
 
 	const [allProducts, setAllProducts] = useState([]);
 

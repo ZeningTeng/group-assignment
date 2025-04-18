@@ -14,7 +14,7 @@ import React, { useState, useContext, useEffect, useMemo } from "react";
 // import "./ShoppingCart.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../GlobalProvider";
-import { orders } from "../model/orderHistory";
+// import { orders } from "../model/orderHistory";
 import ExpandableCard from "./ExpandableCard.js";
 import axios from "axios";
 
@@ -23,12 +23,12 @@ export default function OrderHistory() {
 		// addedItemsInCart,
 		// setAddedItemsInCart,
 		// cartTotalPrice,
-		// setCartTotalPrice,
+		setCartTotalPrice,
 		userEmail,
-		setUserEmail,
 	} = useContext(AppContext);
 	const navigate = useNavigate();
 	const [expandedCard, setExpandedCard] = useState(null);
+	const [userOrders, setUserOrders] = useState([]);
 
 	useEffect(() => {
 		console.warn(userEmail);
@@ -42,7 +42,7 @@ export default function OrderHistory() {
 			});
 			const orders = response.data;
 			console.log("orders", orders);
-			// setJobPost(jobs); // update local state
+			setUserOrders(orders); // update local state
 		} catch (error) {
 			console.error("Get failed:", error);
 		}
@@ -82,7 +82,7 @@ export default function OrderHistory() {
 												<p className="mb-0">
 													You have{" "}
 													<span className="fw-bold text-warning">
-														{orders.length}{" "}
+														{userOrders.length}{" "}
 													</span>
 													orders in the past
 												</p>
@@ -90,7 +90,7 @@ export default function OrderHistory() {
 										</div>
 
 										{/* order history */}
-										{orders.map((order) => (
+										{userOrders.map((order) => (
 											<ExpandableCard
 												key={order.orderId}
 												order={order}
