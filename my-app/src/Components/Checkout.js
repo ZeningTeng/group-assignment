@@ -5,8 +5,6 @@ import {
 	MDBCardImage,
 	MDBCol,
 	MDBContainer,
-	MDBIcon,
-	MDBInput,
 	MDBRow,
 	MDBTypography,
 } from "mdb-react-ui-kit";
@@ -19,6 +17,9 @@ import { loadStripe } from "@stripe/stripe-js";
 export default function Checkout() {
 	const navigate = useNavigate();
 	const { addedItemsInCart, setAddedItemsInCart } = useContext(AppContext);
+	const [currentOrder, setCurrentOrder] = useState(
+		JSON.parse(sessionStorage.getItem("currentOrder")) || []
+	);
 	const buttonStyle = {
 		position: "fixed", // Use "fixed" for always visible
 		top: "22px", // Distance from top
@@ -104,18 +105,33 @@ export default function Checkout() {
 		handleCheckout();
 	};
 
+	// payment gateway api
 	const stripePromise = loadStripe(
 		process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
 	); //publishable_key
 	const handleCheckout = async () => {
+		const productList = currentOrder.productList.map((item) => ({
+			name: item.productName,
+			price: item.price,
+			quantity: item.count,
+		}));
+		productList.push({
+			name: "Shipping-Fee",
+			price: currentOrder.shippingFee,
+			quantity: 1,
+		});
+
+		console.log(productList);
+
 		const res = await fetch("/api/create-checkout-session", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
-				items: [
-					{ name: "T-shirt", price: 2000, quantity: 1 },
-					{ name: "Shoes", price: 4000, quantity: 2 },
-				],
+				// items: [
+				// 	{ name: "T-shirt", price: 2000, quantity: 1 },
+				// 	{ name: "Shoes", price: 4000, quantity: 2 },
+				// ],
+				items: productList,
 			}),
 		});
 
@@ -133,10 +149,10 @@ export default function Checkout() {
 					<div>
 						<button
 							type="button"
-							onClick={() => navigate("/")}
+							onClick={() => navigate("/cart")}
 							style={buttonStyle}
 						>
-							← Home
+							← Cart
 						</button>
 					</div>
 					<MDBCardBody className="p-4">
@@ -149,7 +165,7 @@ export default function Checkout() {
 												tag="h5"
 												className="mb-0"
 											>
-												Card details
+												Confirmation page
 											</MDBTypography>
 											<MDBCardImage
 												// src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp"
@@ -195,7 +211,7 @@ export default function Checkout() {
 											alt="PayPal acceptance mark"
 										/>
 
-										<form
+										{/* <form
 											className="mt-4"
 											onSubmit={handleSubmit}
 										>
@@ -303,7 +319,45 @@ export default function Checkout() {
 													</span>
 												</div>
 											</MDBBtn>
-										</form>
+										</form> */}
+										<hr />
+										<div className="d-flex justify-content-between">
+											<p className="mb-2">Subtotal</p>
+											<p className="mb-2">
+												$
+												{currentOrder &&
+													currentOrder.subtotal}
+											</p>
+										</div>
+										<div className="d-flex justify-content-between">
+											<p className="mb-2">Shipping</p>
+											<p className="mb-2">
+												$
+												{currentOrder &&
+													currentOrder.shippingFee}
+											</p>
+										</div>
+										<div className="d-flex justify-content-between">
+											<p className="mb-2">
+												Total(Incl. taxes)
+											</p>
+											<p className="mb-2">
+												$
+												{currentOrder &&
+													currentOrder.total}
+											</p>
+										</div>
+										<MDBBtn
+											color="warning"
+											block
+											size="lg"
+											type="submit"
+											onClick={handleSubmit}
+										>
+											<div className="d-flex justify-content-center">
+												<span>Place your order</span>
+											</div>
+										</MDBBtn>
 										<MDBBtn
 											color="info"
 											className="text-primary mt-3"
