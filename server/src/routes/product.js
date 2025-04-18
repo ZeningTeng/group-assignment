@@ -1,5 +1,6 @@
 const express = require("express");
 const Product = require("../models/Product");
+const User = require("../models/User");
 
 const router = express.Router();
 
@@ -13,7 +14,15 @@ router.post("/create", async (req, res) => {
       type: req.body.type,
       price: req.body.price,
       oldPrice: req.body.oldPrice,
+      suppliermail: req.body.suppliermail,
     });
+
+    const { suppliermail } = req.body.suppliermail;
+
+    const existingUser = await User.findOne({ suppliermail });
+    if (!existingUser) {
+      return res.status(404).json({ error: "Supplier not found" });
+    }
 
     const productWithImage = {
       ...newProduct.toObject(),
@@ -44,6 +53,23 @@ router.get("/getAll", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error while fetching products." });
+  }
+});
+
+router.get("/getProduct/:email", async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const supplier = await User.findOne({ email });
+
+    if (!supplier || supplier.role !== "supplier") {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+
+    const products = await Product.find({ suppliermail: email });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 });
 

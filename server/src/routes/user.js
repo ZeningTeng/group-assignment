@@ -16,7 +16,7 @@ router.post(
       minNumbers: 1,
       minSymbols: 1,
     }),
-    check("role").isIn(["admin", "customer"]),
+    check("role").isIn(["admin", "customer","supplier"]),
   ],
   async (req, res) => {
     const errors = validationResult(req);
