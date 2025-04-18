@@ -91,7 +91,7 @@ const SignupPage = () => {
         fullName: formData.name,
         email: formData.email,
         password: formData.password,
-        role: "customer",
+        role: formData.role,
       });
 
       setFormSuccess(true);
