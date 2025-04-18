@@ -16,7 +16,7 @@ router.post(
       minNumbers: 1,
       minSymbols: 1,
     }),
-    check("role").isIn(["admin", "customer","supplier"]),
+    check("role").isIn(["admin", "customer", "supplier"]),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -144,7 +144,6 @@ router.get("/getAll", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  
 
   try {
     const existingUser = await User.findOne({ email });
@@ -171,6 +170,7 @@ router.post("/login", async (req, res) => {
       token,
       role: existingUser.role,
       name: existingUser.fullName,
+      email: existingUser.email,
     });
   } catch (error) {
     console.error("Login error:", error);
