@@ -5,6 +5,7 @@ import NavBar from "../Components/NavBar";
 import Footer from "../Components/Footer";
 import Accordian from "../Components/Accordian";
 import Card from "../Components/Card";
+import HomeCard from "../Components/HomeCard";
 
 function HomePage() {
   const [token, setToken] = useState(null);
@@ -134,7 +135,7 @@ function HomePage() {
           <Accordian/>
 
           {/* Section*/}
-          <Card/>
+          <HomeCard/>
           <div
             className="offcanvas offcanvas-start"
             tabIndex={-1}

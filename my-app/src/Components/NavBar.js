@@ -1,21 +1,22 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import { Button, Typography, Box } from "@mui/material";
 
 function NavBar() {
+  const navigate = useNavigate();
+  const location = useLocation(); // Track the current route
+
+  const [token, setToken] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+
   const handleSignOut = () => {
     localStorage.removeItem("token");
     setToken(null);
     setUserInfo(null);
     navigate("/");
-    alert("You have logged out successfully. Thank you for Shopping With us !");
+    alert("You have logged out successfully. Thank you for Shopping With us!");
   };
-  const [token, setToken] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
-  const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_EXPRESS_API_URL;
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -32,14 +33,16 @@ function NavBar() {
   const goToLogin = () => {
     navigate("/login");
   };
+
+  const isShopPage = location.pathname === "/shop";
+
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-dark">
-        <nav aria-label="breadcrumb"></nav>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container px-4 px-lg-1">
-          <a className="navbar-brand" href="#!">
+          <Link className="navbar-brand" to="/">
             Jewelry Shop
-          </a>
+          </Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -53,58 +56,35 @@ function NavBar() {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-              <li className="nav-item">
-                <a className="nav-link" href="#accordionExample">
-                  About
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#offcanvasExample"
-                  aria-controls="offcanvasExample"
-                >
-                  More about us
-                </a>
-              </li>
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  id="navbarDropdown"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Shop
-                </a>
-                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li>
-                    <a className="dropdown-item" href="#!">
-                      All Products
+              {/* Hide "About" and "More about us" links on Shop page */}
+              {!isShopPage && (
+                <>
+                  <a className="nav-link" href="#accordionExample">
+                    About
+                  </a>
+                  <li className="nav-item">
+                    <a
+                      className="nav-link"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvasExample"
+                      aria-controls="offcanvasExample"
+                    >
+                      More about us
                     </a>
                   </li>
-                  <li>
-                    <hr className="dropdown-divider" />
+                  <li className="nav-item dropdown">
+                    <Link className="nav-link" to="/shop">
+                      Shop
+                    </Link>
                   </li>
-                  <li>
-                    <a className="dropdown-item" href="#!">
-                      New Arrivals
-                    </a>
-                  </li>
-                </ul>
-              </li>
+                </>
+              )}
             </ul>
-            <SearchBar />
+
             <form className="d-flex me-3">
               <Link to="/cart">
                 <button className="btn btn-outline-dark" type="submit">
-                  <i className="bi-cart-fill me-1" />
-                  Cart
-                  <span className="badge bg-dark text-white ms-1 rounded-pill">
-                    0
-                  </span>
+                  <i className="bi-cart-fill me-1" /> Cart
                 </button>
               </Link>
             </form>
@@ -117,8 +97,32 @@ function NavBar() {
                       alignItems: "center",
                     }}
                   >
-                    <Typography variant="subtitle1" sx={{ marginRight: 2 }}>
-                      {userInfo.name}
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        marginRight: 2,
+                        "& a": {
+                          textDecoration: "none",
+                          color: "inherit",
+                          cursor: "pointer",
+                          "&:hover": {
+                            textDecoration: "underline",
+                            color: "primary.main",
+                          },
+                        },
+                      }}
+                    >
+                      <Link
+                        to={
+                          userInfo.role === "admin"
+                            ? "/adminDashboard"
+                            : userInfo.role === "supplier"
+                            ? "/supplierDashboard"
+                            : `/`
+                        }
+                      >
+                        {userInfo.name}
+                      </Link>
                     </Typography>
                     <Button
                       variant="contained"
