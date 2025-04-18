@@ -70,6 +70,8 @@ function HomePage() {
 		setAddedItemsInCart,
 		allProducts,
 		setAllProducts,
+		userEmail,
+		setUserEmail,
 	} = useContext(AppContext);
 	const [openSnackBar, setOpenSnackBar] = useState(false);
 
@@ -99,6 +101,7 @@ function HomePage() {
 				.then((res) => {
 					console.log(res.data.user);
 					setUserInfo(res.data.user);
+					setUserEmail(res.data.user.email);
 				})
 				.catch((err) => {
 					console.error("failed", err);
