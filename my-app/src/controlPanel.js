@@ -2,15 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const CrudPage = () => {
-
   const [mode, setMode] = useState('user');
-
   const [searchQuery, setSearchQuery] = useState('');
-
   const [results, setResults] = useState([]);
-
   const [editingItem, setEditingItem] = useState(null);
-
   const [formData, setFormData] = useState({});
 
   const handleModeChange = (e) => {
@@ -21,25 +16,31 @@ const CrudPage = () => {
     setFormData({});
   };
 
+  const handleCreate = async () => {
+    try {
+      if (mode === 'user') {
+        const response = await axios.post('http://localhost:8000/createU', formData);
+      
+        setResults([response.data]);
+      } else {
+        const response = await axios.post('http://localhost:8000/createP', formData);
+        setResults([response.data]);
+      }
+      setFormData({});
+    } catch (error) {
+      console.error('Create error:', error);
+      alert('Error during create');
+    }
+  };
 
   const handleSearch = async () => {
     try {
       if (mode === 'user') {
-      
-        const response = await axios.get('http://localhost:8000/searchU', {
-          params: { name:searchQuery },
-        });
-        const result = response.data.user;
-const resultArray = result ? [result] : [];
-setResults(resultArray);
-      } else if (mode === 'product') {
-      
-        const response = await axios.get('http://localhost:8000/searchP', {
-          params: { name: searchQuery },
-        });
-           const result = response.data.product;
-const resultArray = result ? [result] : [];
-setResults(resultArray);
+        const response = await axios.get('http://localhost:8000/searchU', { params: { name: searchQuery } });
+        setResults(response.data.user ? [response.data.user] : []);
+      } else {
+        const response = await axios.get('http://localhost:8000/searchP', { params: { name: searchQuery } });
+        setResults(response.data.product ? [response.data.product] : []);
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -47,29 +48,15 @@ setResults(resultArray);
     }
   };
 
-
-
   const handleUpdate = async () => {
     try {
+      let response;
       if (mode === 'user') {
-        const response = await axios.put(
-          `http://localhost:8000/api/users/${editingItem.id}`,
-          formData
-        );
-        const updatedItems = results.map(item =>
-          item.id === editingItem.id ? response.data : item
-        );
-        setResults(updatedItems);
-      } else if (mode === 'product') {
-        const response = await axios.put(
-          `http://localhost:8000/api/products/${editingItem.id}`,
-          formData
-        );
-        const updatedItems = results.map(item =>
-          item.id === editingItem.id ? response.data : item
-        );
-        setResults(updatedItems);
+        response = await axios.put('http://localhost:8000/updateU', formData);
+      } else {
+        response = await axios.put('http://localhost:8000/updateP', formData);
       }
+      setResults(results.map(item => item.id === response.data.id ? response.data : item));
       setEditingItem(null);
       setFormData({});
     } catch (error) {
@@ -82,12 +69,10 @@ setResults(resultArray);
     try {
       if (mode === 'user') {
         await axios.delete('http://localhost:8000/deleteU', { data: { name } });
-      } else if (mode === 'product') {
-        await axios.delete(`http://localhost:8000/api/products/`);
+      } else {
+        await axios.delete('http://localhost:8000/deleteP', { data: { name } });
       }
-      const filtered = results.filter(item => item.name !== name);
-      setResults(filtered);
-    
+      setResults(results.filter(item => item.name !== name));
     } catch (error) {
       console.error('Delete error:', error);
       alert('Error deleting item');
@@ -102,59 +87,32 @@ setResults(resultArray);
   return (
     <div style={{ padding: '20px' }}>
       <h2>CRUD Page</h2>
-      
- 
+
       <div>
         <label>
-          <input
-            type="radio"
-            value="user"
-            checked={mode === 'user'}
-            onChange={handleModeChange}
-          />
-          User
+          <input type="radio" value="user" checked={mode === 'user'} onChange={handleModeChange} /> User
         </label>
-        <label style={{ marginLeft: '20px' }}>
-          <input
-            type="radio"
-            value="product"
-            checked={mode === 'product'}
-            onChange={handleModeChange}
-          />
-          Product
+        <label style={{ marginLeft: 20 }}>
+          <input type="radio" value="product" checked={mode === 'product'} onChange={handleModeChange} /> Product
         </label>
       </div>
       <br />
 
       <div>
-        {mode === 'user' ? (
-          <div>
-            <label>
-              Enter username:
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </label>
-          </div>
-        ) : (
-          <div>
-            <label>
-              Enter product name:
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </label>
-          </div>
-        )}
-        <button onClick={handleSearch}>Search</button>
+        <label>
+          {mode === 'user' ? 'Enter username:' : 'Enter product name:'}
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            style={{ marginLeft: 8 }}
+          />
+        </label>
+        <button onClick={handleSearch} style={{ marginLeft: 8 }}>Search</button>
+        <button onClick={handleCreate} style={{ marginLeft: 8 }}>Create</button>
       </div>
       <hr />
 
- 
       <div>
         <h3>Results:</h3>
         {results.length === 0 ? (
@@ -163,10 +121,9 @@ setResults(resultArray);
           <table border="1" cellPadding="5">
             <thead>
               <tr>
-               
                 {mode === 'user' ? (
                   <>
-                    <th>name</th>
+                    <th>Name</th>
                     <th>Email</th>
                   </>
                 ) : (
@@ -179,9 +136,8 @@ setResults(resultArray);
               </tr>
             </thead>
             <tbody>
-              {results.map((item) => (
-                <tr key={item.name}>
-               
+              {results.map(item => (
+                <tr key={item.id}>
                   {mode === 'user' ? (
                     <>
                       <td>{item.name}</td>
@@ -195,7 +151,7 @@ setResults(resultArray);
                   )}
                   <td>
                     <button onClick={() => startEditing(item)}>Edit</button>
-                    <button onClick={() => handleDelete(item.name)}>Delete</button>
+                    <button onClick={() => handleDelete(item.name)} style={{ marginLeft: 8 }}>Delete</button>
                   </td>
                 </tr>
               ))}
@@ -205,20 +161,18 @@ setResults(resultArray);
       </div>
       <hr />
 
-   
       <div>
         <h3>{editingItem ? 'Edit Item' : 'Create New Item'}</h3>
         <div>
           {mode === 'user' ? (
             <>
               <label>
-                Username:
+                Name:
                 <input
                   type="text"
-                  value={formData.username || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
+                  value={formData.name || ''}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  style={{ marginLeft: 8 }}
                 />
               </label>
               <br />
@@ -226,34 +180,121 @@ setResults(resultArray);
                 Email:
                 <input
                   type="text"
-                  value={formData.email || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  value={formData.email || ''}
+                  onChange={e => setFormData({ ...formData, email: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Password:
+                <input
+                  type="password"
+                  value={formData.password || ''}
+                  onChange={e => setFormData({ ...formData, password: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Type:
+                <input
+                  type="text"
+                  value={formData.type || ''}
+                  onChange={e => setFormData({ ...formData, type: e.target.value })}
+                  style={{ marginLeft: 8 }}
                 />
               </label>
             </>
           ) : (
             <>
               <label>
-                Product Name:
+                ID:
                 <input
                   type="text"
-                  value={formData.name || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  value={formData.id || ''}
+                  onChange={e => setFormData({ ...formData, id: e.target.value })}
+                  style={{ marginLeft: 8 }}
                 />
               </label>
               <br />
               <label>
-                Price:
+                Name:
                 <input
-                  type="number"
-                  value={formData.price || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, price: e.target.value })
-                  }
+                  type="text"
+                  value={formData.name || ''}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Original Price:
+                <input
+                  type="text"
+                  value={formData.originalPrice || ''}
+                  onChange={e => setFormData({ ...formData, originalPrice: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Count:
+                <input
+                  type="text"
+                  value={formData.count || ''}
+                  onChange={e => setFormData({ ...formData, count: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Weight:
+                <input
+                  type="text"
+                  value={formData.weight || ''}
+                  onChange={e => setFormData({ ...formData, weight: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Material:
+                <input
+                  type="text"
+                  value={formData.material || ''}
+                  onChange={e => setFormData({ ...formData, material: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Description:
+                <input
+                  type="text"
+                  value={formData.description || ''}
+                  onChange={e => setFormData({ ...formData, description: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Image Path:
+                <input
+                  type="text"
+                  value={formData.imagePath || ''}
+                  onChange={e => setFormData({ ...formData, imagePath: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Discounted Price:
+                <input
+                  type="text"
+                  value={formData.discountedPrice || ''}
+                  onChange={e => setFormData({ ...formData, discountedPrice: e.target.value })}
+                  style={{ marginLeft: 8 }}
                 />
               </label>
             </>
@@ -261,7 +302,9 @@ setResults(resultArray);
           <br />
           {editingItem ? (
             <button onClick={handleUpdate}>Update</button>
-          ) : null}
+          ) : (
+            <button onClick={handleCreate}>Create</button>
+          )}
         </div>
       </div>
     </div>

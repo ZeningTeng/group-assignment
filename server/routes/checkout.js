@@ -1,8 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const Stripe = require("stripe");
 const router = express.Router();
-require("dotenv").config();
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY); //🔒 使用 .env 較安全 (secret_key)
+
+const stripe = Stripe("sk_test_51REsvWQkw3LLv39uvPY37gUkOY690Hx2PjP9QifKse7VW7br5nmjYw4XmTOzZ22H5p9T4zVLAMEY3SgkPChlvhSh00HGrsfEDd"); //🔒 使用 .env 較安全 (secret_key)
 
 router.post("/create-checkout-session", async (req, res) => {
 	const { items, email } = req.body;

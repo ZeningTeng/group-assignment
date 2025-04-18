@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -17,11 +18,13 @@ app.use(
 	})
 );
 
+
 // app.use(express.static(path.join(__dirname, "../my-app/build")));
 
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
 // });
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/images", express.static("images")); // make Express server expose the images folder
@@ -40,12 +43,11 @@ const userSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
-	id: { type: String },
+	id: { type: String},
 	name: { type: String },
-
-	originalPrice: { type: String },
-	count: { type: String },
-	weight: { type: String },
+	originalPrice: { type: String},
+	count: { type: String},
+	weight: { type: String},
 	material: { type: String },
 	description: { type: String },
 	imagePath: { type: String },
@@ -142,6 +144,7 @@ app.post("/createU", async (req, res) => {
 });
 
 app.post("/createP", async (req, res) => {
+
 	const {
 		id,
 		name,
@@ -153,6 +156,7 @@ app.post("/createP", async (req, res) => {
 		imagePath,
 		discountedPrice,
 	} = req.body;
+
 
 	const newUser = new Products({
 		id,
@@ -205,14 +209,16 @@ app.post("/createP", async (req, res) => {
  *
  */
 app.put("/updateU", async (req, res) => {
-	const { name } = req.body;
 
+	const { name } = req.body;
 	const user = await User.findOne({ name: name });
+
 	if (!user) {
 		return res.status(404).json({ error: "User not found." });
 	}
 
 	user.name = name;
+
 
 	await user.save();
 	return res.status(200).json({ message: " updated successfully." });
@@ -227,6 +233,10 @@ app.put("/updateP", async (req, res) => {
 
 	user.name = name;
 	user.originalPrice = originalPrice;
+
+
+
+
 
 	await user.save();
 	return res.status(200).json({ message: " updated successfully." });
