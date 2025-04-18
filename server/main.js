@@ -17,6 +17,13 @@ app.use(
 	})
 );
 
+
+app.use(express.static(path.join(__dirname, '../my-app/build')));
+
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
+});
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/images", express.static("images")); // make Express server expose the images folder
