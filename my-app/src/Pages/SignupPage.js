@@ -12,6 +12,7 @@ const SignupPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -36,6 +37,10 @@ const SignupPage = () => {
       newErrors.email = "Please enter a valid email address";
     }
 
+    if (!formData.role) {
+      newErrors.role = "Please choose a role";
+    }
+    
     // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
@@ -81,30 +86,19 @@ const SignupPage = () => {
     setIsSubmitting(true);
 
     try {
-      await axios.post(apiUrl + "/user/create", {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        type: "user",
-      });
-
-      setFormSuccess(true);
-
-      // Redirecting to login after showing success message
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-    } catch (err) {
-      const errorMessage =
-        err.response?.data?.error || "An error occurred during registration";
-
-      if (errorMessage.includes("email")) {
-        setErrors((prev) => ({ ...prev, email: errorMessage }));
-      } else if (errorMessage.includes("password")) {
-        setErrors((prev) => ({ ...prev, password: errorMessage }));
-      } else {
-        setErrors((prev) => ({ ...prev, general: errorMessage }));
-      }
+          await axios.post("http://localhost:8000/user/create", {
+           name:     formData.name,
+             email:    formData.email,
+             password: formData.password,
+            type:     formData.role
+          });
+    
+          navigate("/login");
+          }catch (err) {
+                 setErrors(prev => ({
+                  ...prev,
+                  general: err.response?.data?.error || "Signup failed"
+                }));
     } finally {
       setIsSubmitting(false);
     }
@@ -184,6 +178,21 @@ const SignupPage = () => {
                   <span className="error-message">{errors.email}</span>
                 )}
               </div>
+                          <div className="form-group">
+              <label htmlFor="role">I am a…</label>
+              <select
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className={errors.role ? "error" : ""}
+              >
+                <option value="">— Select —</option>
+                <option value="customer">Customer</option>
+                <option value="supplier">Supplier</option>
+              </select>
+              {errors.role && <span className="error-message">{errors.role}</span>}
+            </div>
 
               <div className="form-group">
                 <label htmlFor="password">Password</label>
