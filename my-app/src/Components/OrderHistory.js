@@ -16,16 +16,37 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../GlobalProvider";
 import { orders } from "../model/orderHistory";
 import ExpandableCard from "./ExpandableCard.js";
+import axios from "axios";
 
 export default function OrderHistory() {
 	const {
 		// addedItemsInCart,
 		// setAddedItemsInCart,
 		// cartTotalPrice,
-		setCartTotalPrice,
+		// setCartTotalPrice,
+		userEmail,
+		setUserEmail,
 	} = useContext(AppContext);
 	const navigate = useNavigate();
 	const [expandedCard, setExpandedCard] = useState(null);
+
+	useEffect(() => {
+		console.warn(userEmail);
+		getUserOrders();
+	}, []);
+
+	const getUserOrders = async () => {
+		try {
+			const response = await axios.get("http://localhost:8000/orders", {
+				params: { email: userEmail },
+			});
+			const orders = response.data;
+			console.log("orders", orders);
+			// setJobPost(jobs); // update local state
+		} catch (error) {
+			console.error("Get failed:", error);
+		}
+	};
 
 	return (
 		<section

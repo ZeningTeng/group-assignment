@@ -65,6 +65,14 @@
 	width: 100%;
 }
 
+@media (max-width: 767.98px) {
+	.fixed-img-size {
+		height: 200px; /* or any height you prefer */
+		object-fit: cover; /* or 'cover / contain' */
+		width: 100%;
+	}
+}
+
 .flip-card {
 	perspective: 1000px;
 }

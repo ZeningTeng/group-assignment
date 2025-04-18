@@ -185,7 +185,7 @@ app.get("/products", async (req, res) => {
 
 // get all orders based on user email
 app.get("/orders", async (req, res) => {
-	const { email } = req.body;
+	const email = req.query.email;
 	console.warn("get orders");
 	const orders = await Orders.find({ userEmail: email });
 	return res.status(200).json(orders);
