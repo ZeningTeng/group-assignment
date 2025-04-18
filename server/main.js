@@ -91,7 +91,7 @@ const User = mongoose.model("User", userSchema);
 const Products = mongoose.model("Product", productSchema);
 const Orders = mongoose.model("Orders", ordersSchema);
 
-let emailRegex = /^[a-zA-Z0-9]+@northeastern\.edu$/;
+let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 let namePattern = /^[a-zA-Z]+$/;
 
 let passPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
