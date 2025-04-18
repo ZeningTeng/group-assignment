@@ -7,6 +7,10 @@ function GlobalProvider() {
 		sessionStorage.getItem("addedItemsInCart")
 	);
 
+	const [userTier, setUserTier] = useState(
+		sessionStorage.getItem("userTier") || ""
+	);
+
 	const [userEmail, setUserEmail] = useState(
 		sessionStorage.getItem("userEmail") || ""
 	); // set user eamil as user id
@@ -43,6 +47,8 @@ function GlobalProvider() {
 				setAllProducts,
 				userEmail,
 				setUserEmail,
+				userTier,
+				setUserTier,
 			}}
 		>
 			<App />

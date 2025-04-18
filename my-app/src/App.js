@@ -15,14 +15,15 @@ import Checkout from "./Components/Checkout";
 import OrderHistory from "./Components/OrderHistory";
 import ControlPanel from "./controlPanel";
 import SuccessPage from "./Components/SuccessPage";
+import About from "./Components/About";
 import SignupPage from "./Components/Pages/SignupPage";
+
 function App() {
   const token = localStorage.getItem("token");
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {}, [location, navigate]);
-
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -35,8 +36,10 @@ function App() {
       <Route path="/success" element={<SuccessPage />} />
       <Route path="/cancel" element={<Navigate to="/cart" replace />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/about" element={<About />} />
     </Routes>
   );
+
 }
 
 export default function AppWithRouter() {
