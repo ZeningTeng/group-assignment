@@ -105,7 +105,7 @@ export default function Checkout() {
     }
     // console.warn(form);
     handleEmail();
-    // handleCheckout();
+    handleCheckout();
   };
 
   // payment gateway api
