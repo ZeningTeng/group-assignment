@@ -305,7 +305,7 @@ function HomePage() {
 											more about us
 										</a> */}
 									</li>
-									<li className="nav-item dropdown">
+									{/* <li className="nav-item dropdown">
 										<a
 											className="nav-link dropdown-toggle"
 											id="navbarDropdown"
@@ -349,7 +349,7 @@ function HomePage() {
 												</a>
 											</li>
 										</ul>
-									</li>
+									</li> */}
 									<li className="nav-item">
 										{userInfo &&
 										userInfo.type === "admin" ? (

@@ -24,6 +24,15 @@ export default function ShoppingCart() {
 	const { addedItemsInCart, setAddedItemsInCart } = useContext(AppContext);
 	const navigate = useNavigate();
 
+	const userTier = sessionStorage.getItem("userTier")?.toLowerCase();
+	const discountMap = {
+		gold: 0.2,
+		premium: 0.4,
+		vvvip: 0.6,
+	};
+
+	const discountRate = discountMap[userTier];
+
 	// Price Calculation
 	// const [cartTotalPrice, setCartTotalPrice] = useState(0);
 
@@ -445,6 +454,34 @@ export default function ShoppingCart() {
 													<p className="mb-2">
 														${calCartTotalPrice}
 													</p>
+												</div>
+
+												<div className="d-flex justify-content-between">
+													{discountRate && (
+														<p
+															className="mb-2"
+															style={{
+																color: "yellow",
+															}}
+														>
+															Congratulations! We
+															have helped you
+															apply the discount!
+															(
+															{discountRate * 100}
+															% off)
+														</p>
+													)}
+												</div>
+												<div
+													className="d-flex  text-decoration-line-through"
+													style={{
+														color: "yellow",
+													}}
+												>
+													Original Price: $
+													{calCartTotalPrice /
+														(1 - discountRate)}
 												</div>
 
 												<MDBBtn
