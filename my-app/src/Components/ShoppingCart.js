@@ -27,13 +27,37 @@ export default function ShoppingCart() {
 	// Price Calculation
 	// const [cartTotalPrice, setCartTotalPrice] = useState(0);
 
+	// create current order
 	const calCartTotalPrice = useMemo(() => {
-		let total = 0;
+		// todo: add userEmail, date when checkout
+		let shippingFee = calShippingFee();
+		let currentOrder = {
+			refundable: true,
+			shippingFee: shippingFee,
+			productList: [],
+		};
+
+		let subtotal = 0;
+
 		addedItemsInCart.forEach((item) => {
-			total += item.price * item.count;
+			subtotal += item.price * item.count;
+
+			currentOrder.productList.push({
+				productId: item.id,
+				count: item.count,
+				productName: item.productName,
+				price: item.price,
+			});
 		});
-		total = total + calShippingFee();
-		return ceilToSecondDecimal(total);
+
+		const total = ceilToSecondDecimal(subtotal + shippingFee);
+		currentOrder.subtotal = ceilToSecondDecimal(subtotal);
+		currentOrder.total = total;
+
+		// console.warn(currentOrder);
+		sessionStorage.setItem("currentOrder", JSON.stringify(currentOrder));
+
+		return total;
 	}, [addedItemsInCart]);
 
 	function ceilToSecondDecimal(num) {

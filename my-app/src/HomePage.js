@@ -153,6 +153,7 @@ function HomePage() {
 				item.id === id ? { ...item, count: item.count + 1 } : item
 			);
 		}
+		// console.warn(allItems);
 		setAddedItemsInCart(allItems);
 		setCartCount(allItems.length); // count by types of items
 		setOpenSnackBar(true);
@@ -538,7 +539,7 @@ function HomePage() {
 							<div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 								{/* product information */}
 								{currentProducts.map((product) => (
-									<div className="col mb-5" key={product._id}>
+									<div className="col mb-5" key={product.id}>
 										<div className="card h-100">
 											<div className="flip-card">
 												<div className="flip-card-inner">
