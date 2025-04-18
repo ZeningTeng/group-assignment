@@ -40,18 +40,20 @@ const userSchema = new mongoose.Schema({
 	password: { type: String, required: true },
 	image: { type: String },
 	type: { type: String },
+	tier: { type: String },
 });
 
 const productSchema = new mongoose.Schema({
 	id: { type: String},
 	name: { type: String },
-	originalPrice: { type: String},
-	count: { type: String},
+	sale:{type:String},
+	originalPrice: { type: Number},
+	count: { type: Number},
 	weight: { type: String},
 	material: { type: String },
 	description: { type: String },
 	imagePath: { type: String },
-	discountedPrice: { type: String },
+	discountedPrice: { type: Number},
 });
 const productSchema1 = new mongoose.Schema({
 	id: { type: String, required: true },
@@ -90,7 +92,7 @@ const Products = mongoose.model("Product", productSchema);
 const Orders = mongoose.model("Orders", ordersSchema);
 
 let emailRegex = /^[a-zA-Z0-9]+@northeastern\.edu$/;
-let namePattern = /^[a-zA-Z]+ [a-zA-Z]+$/;
+let namePattern = /^[a-zA-Z]+$/;
 
 let passPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
 
@@ -128,8 +130,22 @@ app.use("/api", checkoutRoutes);
  */
 
 app.post("/createU", async (req, res) => {
-	const { name, email, password, type } = req.body;
-
+	const { name, email, password, type ,tier} = req.body;
+ 	if (!namePattern.test(name)) {
+ 		return res.status(400).json({ error: "Validation failed." });
+ 	}
+	 if (!passPattern.test(password)) {
+		return res.status(400).json({ error: "Validation failed." });
+	}
+	if (!emailRegex.test(email)) {
+		return res.status(400).json({ error: "Validation failed." });
+	}
+	console.log(
+		'name:', `"${name}"`, namePattern.test(name),
+		'email:', `"${email}"`, emailRegex.test(email),
+		'pass:', `"${password}"`, passPattern.test(password)
+	  );
+	  
 	const hashedPassword = await bcrypt.hash(password, 10);
 
 	const newUser = new User({
@@ -137,6 +153,7 @@ app.post("/createU", async (req, res) => {
 		email,
 		password: hashedPassword,
 		type,
+		tier,
 	});
 
 	await newUser.save();
@@ -148,6 +165,7 @@ app.post("/createP", async (req, res) => {
 	const {
 		id,
 		name,
+		sale,
 		originalPrice,
 		count,
 		weight,
@@ -161,6 +179,7 @@ app.post("/createP", async (req, res) => {
 	const newUser = new Products({
 		id,
 		name,
+		sale,
 		originalPrice,
 		count,
 		weight,
@@ -210,7 +229,7 @@ app.post("/createP", async (req, res) => {
  */
 app.put("/updateU", async (req, res) => {
 
-	const { name } = req.body;
+	const { name,email } = req.body;
 	const user = await User.findOne({ name: name });
 
 	if (!user) {
@@ -218,13 +237,13 @@ app.put("/updateU", async (req, res) => {
 	}
 
 	user.name = name;
-
+	user.email=email;
 
 	await user.save();
 	return res.status(200).json({ message: " updated successfully." });
 });
 app.put("/updateP", async (req, res) => {
-	const { name, originalPrice } = req.body;
+	const { name, originalPrice ,sale,weight} = req.body;
 
 	const user = await Products.findOne({ name: name });
 	if (!user) {
@@ -233,7 +252,8 @@ app.put("/updateP", async (req, res) => {
 
 	user.name = name;
 	user.originalPrice = originalPrice;
-
+	user.sale=sale;
+	user.weight=weight;
 
 
 
