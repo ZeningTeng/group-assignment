@@ -294,7 +294,7 @@ const handleControlPanel = () => {
                     {product.name || 'No Name'}
                   </Typography>
                   <Typography variant="subtitle1" color="text.secondary">
-                    Price: {product.price || 'N/A'}
+                    Price: {product.originalPrice || 'N/A'}
                   </Typography>
                   <Typography variant="subtitle1" color="text.secondary">
                     Count: {product.count || 'N/A'}

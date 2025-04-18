@@ -195,6 +195,7 @@ const CrudPage = () => {
                   style={{ marginLeft: 8 }}
                 />
               </label>
+              
               <br />
               <label>
                 Type:
@@ -205,6 +206,18 @@ const CrudPage = () => {
                   style={{ marginLeft: 8 }}
                 />
               </label>
+              <br />
+              <label>
+                Tier:
+                <input
+                  type="text"
+                  value={formData.tier || ''}
+                  onChange={e => setFormData({ ...formData, tier: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+             
+            
             </>
           ) : (
             <>
@@ -224,6 +237,16 @@ const CrudPage = () => {
                   type="text"
                   value={formData.name || ''}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  style={{ marginLeft: 8 }}
+                />
+              </label>
+              <br />
+              <label>
+                Sale:
+                <input
+                  type="text"
+                  value={formData.sale || ''}
+                  onChange={e => setFormData({ ...formData, sale: e.target.value })}
                   style={{ marginLeft: 8 }}
                 />
               </label>
@@ -306,6 +329,7 @@ const CrudPage = () => {
             <button onClick={handleCreate}>Create</button>
           )}
         </div>
+        
       </div>
     </div>
   );
