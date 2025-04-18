@@ -72,6 +72,8 @@ function HomePage() {
 		setAllProducts,
 		userEmail,
 		setUserEmail,
+		userTier,
+		setUserTier,
 	} = useContext(AppContext);
 	const [openSnackBar, setOpenSnackBar] = useState(false);
 
@@ -104,6 +106,9 @@ function HomePage() {
 					let email = res.data.user.email;
 					setUserEmail(email);
 					sessionStorage.setItem("userEmail", email);
+					let tier = res.data.user.tier;
+					setUserTier(tier);
+					sessionStorage.setItem("userTier", tier);
 				})
 				.catch((err) => {
 					console.error("failed", err);
@@ -125,6 +130,7 @@ function HomePage() {
 
 	const handleSignOut = () => {
 		sessionStorage.removeItem("userEmail");
+		sessionStorage.removeItem("userTier");
 		sessionStorage.removeItem("addedItemsInCart");
 		sessionStorage.removeItem("currentOrder");
 		localStorage.removeItem("token");
@@ -179,8 +185,39 @@ function HomePage() {
 	const getAllProducts = async () => {
 		try {
 			const response = await axios.get("http://localhost:8000/products");
-			const products = response.data.products;
-			// console.log("products", products);
+			let products = response.data.products;
+			console.log("products", products);
+
+			const userTier = sessionStorage.getItem("userTier")?.toLowerCase(); // gold, premium, vvvip
+
+			// Define tier discount mapping
+			const discountMap = {
+				gold: 0.2,
+				premium: 0.4,
+				vvvip: 0.6,
+			};
+
+			// Apply discount if tier is recognized
+			if (discountMap[userTier]) {
+				const discountRate = discountMap[userTier];
+
+				products = products.map((product) => {
+					const basePrice =
+						parseFloat(product.discountedPrice) ||
+						parseFloat(product.originalPrice);
+					const discounted = (basePrice * (1 - discountRate)).toFixed(
+						2
+					);
+
+					return {
+						...product,
+						discountedPrice: discounted,
+					};
+				});
+			}
+
+			console.log("discounted:", products);
+
 			setAllProducts(products); // update local state
 		} catch (error) {
 			console.error("Get failed:", error);
@@ -254,9 +291,9 @@ function HomePage() {
 										</a>
 									</li>
 									<li className="nav-item">
-										<a className="nav-link" href="#!">
+										<Link className="nav-link" to="/about">
 											About
-										</a>
+										</Link>
 									</li>
 									<li className="nav-item">
 										{/* <a
@@ -357,7 +394,10 @@ function HomePage() {
 										>
 											<Typography
 												variant="subtitle1"
-												sx={{ marginRight: 2 }}
+												sx={{
+													marginRight: 1,
+													marginLeft: 2,
+												}}
 											>
 												{userInfo.name}
 											</Typography>

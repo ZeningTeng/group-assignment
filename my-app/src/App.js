@@ -15,6 +15,7 @@ import Checkout from "./Components/Checkout";
 import OrderHistory from "./Components/OrderHistory";
 import ControlPanel from "./controlPanel";
 import SuccessPage from "./Components/SuccessPage";
+import About from "./Components/About";
 function App() {
 	const token = localStorage.getItem("token");
 	const location = useLocation();
@@ -33,6 +34,7 @@ function App() {
 			<Route path="/controlPanel" element={<ControlPanel />} />
 			<Route path="/success" element={<SuccessPage />} />
 			<Route path="/cancel" element={<Navigate to="/cart" replace />} />
+			<Route path="/about" element={<About />} />
 		</Routes>
 	);
 }
