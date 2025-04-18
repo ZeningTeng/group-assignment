@@ -13,6 +13,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../GlobalProvider";
 import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
 
 export default function Checkout() {
 	const navigate = useNavigate();
@@ -101,7 +102,7 @@ export default function Checkout() {
 		if (validate()) {
 			navigate("/order-history");
 		}
-		console.warn(form);
+		// console.warn(form);
 		handleCheckout();
 	};
 
@@ -109,35 +110,50 @@ export default function Checkout() {
 	const stripePromise = loadStripe(
 		process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
 	); //publishable_key
+
 	const handleCheckout = async () => {
-		const productList = currentOrder.productList.map((item) => ({
-			name: item.productName,
-			price: item.price,
-			quantity: item.count,
-		}));
-		productList.push({
-			name: "Shipping-Fee",
-			price: currentOrder.shippingFee,
-			quantity: 1,
-		});
+		try {
+			// Step 1: Transform items to Stripe line_items format
+			const productList = currentOrder.productList.map((item) => ({
+				name: item.productName,
+				price: item.price,
+				quantity: item.count,
+			}));
 
-		console.log(productList);
+			productList.push({
+				name: "Shipping-Fee",
+				price: currentOrder.shippingFee,
+				quantity: 1,
+			});
+			console.log(productList);
 
-		const res = await fetch("/api/create-checkout-session", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				// items: [
-				// 	{ name: "T-shirt", price: 2000, quantity: 1 },
-				// 	{ name: "Shoes", price: 4000, quantity: 2 },
-				// ],
-				items: productList,
-			}),
-		});
+			// Step 3: Call Stripe
+			// send products to stripe payment page
+			const res = await fetch("/api/create-checkout-session", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					// items: [
+					// 	{ name: "T-shirt", price: 2000, quantity: 1 },
+					// 	{ name: "Shoes", price: 4000, quantity: 2 },
+					// ],
+					items: productList,
+					email: sessionStorage.getItem("userEmail"), // ✅ add email
+				}),
+			});
 
-		const { id } = await res.json();
-		const stripe = await stripePromise;
-		stripe.redirectToCheckout({ sessionId: id });
+			const { id } = await res.json();
+			const stripe = await stripePromise;
+			stripe.redirectToCheckout({ sessionId: id });
+		} catch (error) {
+			console.error(
+				"❌ Error during checkout:",
+				error.response?.data || error.message
+			);
+			alert(
+				"Something went wrong. Please make sure you have logged in and try again."
+			);
+		}
 	};
 
 	return (

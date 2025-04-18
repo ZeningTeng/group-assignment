@@ -5,7 +5,7 @@ require("dotenv").config();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY); //🔒 使用 .env 較安全 (secret_key)
 
 router.post("/create-checkout-session", async (req, res) => {
-	const { items } = req.body;
+	const { items, email } = req.body;
 
 	const line_items = items.map((item) => ({
 		price_data: {
@@ -22,6 +22,7 @@ router.post("/create-checkout-session", async (req, res) => {
 		payment_method_types: ["card"],
 		line_items,
 		mode: "payment",
+		customer_email: email, // ✅ this sets the email
 		success_url: "http://localhost:3000/success",
 		cancel_url: "http://localhost:3000/cancel",
 	});
