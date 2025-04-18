@@ -16,12 +16,9 @@ import ShoppingCart from "./Components/ShoppingCart";
 import SignupPage from "./Pages/SignupPage";
 import AdminPage from "./Pages/AdminPage";
 import SupplierPage from "./Pages/SupplierPage";
+import Unauthorized from "./Pages/Unauthorized";
 
-function App() {
-  const location = useLocation();
-
-  useEffect(() => {}, [location, navigate]);
-
+function App() { 
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -31,6 +28,7 @@ function App() {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/adminDashBoard" element={<AdminPage />} />
       <Route path="/supplierDashBoard" element={<SupplierPage />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
     </Routes>
   );
 }

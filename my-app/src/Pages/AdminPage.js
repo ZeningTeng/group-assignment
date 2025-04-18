@@ -38,7 +38,7 @@ function AdminPage() {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/unauthorized" />;
   }
 
   const handlePageChange = (page) => {
