@@ -41,8 +41,9 @@ This document provides an overview of the bootstrap components used in the proje
 ---
 ## How to use
 To start react
-In your vsCode editor: 1.cd your/assignment/location/group-assignment/my-app
-2.npm start
+In your vsCode editor: 
+- cd your/assignment/location/group-assignment/my-app
+- npm start
 You might want to install react before you do this.
 all assets are in my-app/public and all frontend files are in my-app/src
 Backends files in group-assignment/server
